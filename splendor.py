@@ -15,15 +15,13 @@ class Card:
     cost: Gems
     pt: int
     bonus: int
-    total: int
 
 
 def parse_card(row: List[str]) -> Card:
     *cost, pt, bonus = row
-    cost: Gems = tuple(int(x) if x else 0 for x in cost)
-    pt = int(pt) if pt else 0
-    bonus = COLORS.index(bonus)
-    return Card(cost, pt, bonus, sum(cost))
+    return Card(cost=tuple(int(x) if x else 0 for x in cost),
+                pt=int(pt) if pt else 0,
+                bonus=COLORS.index(bonus))
 
 
 def load_cards() -> List[Card]:
@@ -31,7 +29,7 @@ def load_cards() -> List[Card]:
         reader = csv.reader(f)
         next(reader)  # skip the header
         cards = [parse_card(row) for row in reader]
-    cards.sort(key=lambda c: (c.total, c.pt, sorted(c.cost), c.bonus))
+    cards.sort(key=lambda c: (sum(c.cost), c.pt, sorted(c.cost), c.bonus))
     return cards
 
 
