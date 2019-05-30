@@ -1,13 +1,11 @@
 import csv
 from dataclasses import dataclass
-from itertools import chain
-from pprint import pprint
+from itertools import product
 from typing import List, Tuple
-
-from more_itertools import chunked
 
 Gems = Tuple[int, ...]
 COLORS = ('White', 'Blue', 'Green', 'Red', 'Black')
+MAX_GEMS = 7
 
 
 @dataclass(frozen=True)
@@ -33,24 +31,23 @@ def load_cards() -> List[Card]:
     return cards
 
 
-def split_n(n: int, bins: int, res: List[int] = None):
-    if res is None:
-        res: List[int] = []
-    partial_sum = sum(res)
-    for i in range(n - partial_sum + 1):
-        res_new = res + [i]
-        if bins > 2:
-            yield from split_n(n, bins - 1, res_new)
-        else:
-            res_new.append(n - partial_sum - i)
-            yield res_new
+def possible_buys(cards: List[Card]):
+    # a = list(chain.from_iterable(map(tuple, split_n(i, 5)) for i in range(5)))
+    gem_combs = product(range(MAX_GEMS + 1), repeat=len(COLORS))
+    less_or_equal = lambda t1, t2: all(i <= j for i, j in zip(t1, t2))
+    get_buys = lambda comb: [c for c in cards if less_or_equal(c.cost, comb)]
+    return {comb: get_buys(comb) for comb in gem_combs}
 
 
 if __name__ == '__main__':
-    cards = load_cards()
-    for chunk in chunked(cards, 5):
-        pprint(chunk)
-        print()
+    cards_ = load_cards()
+    buys = possible_buys(cards_)
+    # import pprint
+    # with open('temp.txt', mode='w') as f:
+    #     f.write(pprint.pformat(buys))
+    # import pickle
+    # with open('data.pickle', 'wb') as f:
+    #     pickle.dump(buys, f, pickle.HIGHEST_PROTOCOL)
 
 """
 15 turns
