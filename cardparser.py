@@ -4,6 +4,7 @@ from typing import List, Tuple
 
 Gems = Tuple[int, ...]
 COLORS = ('White', 'Blue', 'Green', 'Red', 'Black')
+COLORS_SHORT = ('W', 'B', 'G', 'R', 'K')
 
 
 @dataclass(frozen=True)
@@ -11,13 +12,23 @@ class Card:
     cost: Gems
     pt: int
     bonus: int
+    id: str
+
+    def __str__(self):
+        return self.id
 
 
 def parse_card(row: List[str]) -> Card:
     *cost, pt, bonus = row
-    return Card(cost=tuple(int(x) if x else 0 for x in cost),
-                pt=int(pt) if pt else 0,
-                bonus=COLORS.index(bonus))
+    card_id = ''.join([
+        pt,
+        COLORS_SHORT[COLORS.index(bonus)],
+        ''.join(sorted(x for x in cost if x != "0")),
+    ])
+    return Card(cost=tuple(int(x) for x in cost),
+                pt=int(pt),
+                bonus=COLORS.index(bonus),
+                id=card_id)
 
 
 def load_deck() -> List[Card]:
@@ -27,3 +38,9 @@ def load_deck() -> List[Card]:
         cards = [parse_card(row) for row in reader]
     cards.sort(key=lambda c: (sum(c.cost), c.pt, sorted(c.cost), c.bonus))
     return cards
+
+
+if __name__ == '__main__':
+    deck = load_deck()
+    for card in deck:
+        print(card)

@@ -24,11 +24,11 @@ class State:
         self.gems = gems if gems else (0, 0, 0, 0, 0)
         self.cards = cards if cards else []
 
-    def __repr__(self):  # returns a string representation of the position for printing the object
-        return repr(self.gems)
+    def __repr__(self):  # a string representation for printing
+        return f'{self.gems} {"-".join(str(c) for c in self.cards)}'
 
-    def canonical(self):  # returns a string representation after adjusting for symmetry
-        return repr(self)
+    def canonical(self):  # a string representation after adjusting for symmetry
+        return f'{self.gems} {"-".join(sorted(str(c) for c in self.cards))}'
 
     def isgoal(self):
         return sum(card.pt for card in self.cards) == GOAL_PTS
@@ -60,7 +60,9 @@ class State:
 
 
 if __name__ == '__main__':
-    print(repr(State()))
+    st = State(cards=[deck[40], deck[5], deck[21]])
+    print(repr(st))
+    print(st.canonical())
 
 # import pprint
 # with open('temp.txt', mode='w') as f:
