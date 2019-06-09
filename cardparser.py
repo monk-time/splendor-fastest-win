@@ -1,10 +1,17 @@
 import csv
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List
 
-Gems = Tuple[int, ...]
 COLORS = ('White', 'Blue', 'Green', 'Red', 'Black')
 COLORS_SHORT = ('W', 'B', 'G', 'R', 'K')
+
+
+class Gems(tuple):
+    def __add__(self, other):
+        return Gems(map(sum, zip(self, other)))
+
+    def __sub__(self, other):
+        return self.__add__(-x for x in other)
 
 
 @dataclass(frozen=True)
@@ -25,7 +32,7 @@ def parse_card(row: List[str]) -> Card:
         COLORS_SHORT[COLORS.index(bonus)],
         ''.join(sorted(x for x in cost if x != "0")),
     ])
-    return Card(cost=tuple(int(x) for x in cost),
+    return Card(cost=Gems(int(x) for x in cost),
                 pt=int(pt),
                 bonus=COLORS.index(bonus),
                 id=card_id)
