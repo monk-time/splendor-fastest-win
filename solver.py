@@ -1,15 +1,16 @@
 from collections import deque
-from itertools import product, permutations
-from typing import List, Dict
+from itertools import permutations, product
+from typing import Dict, List
 
-from cardparser import Gems, Card, COLORS, load_deck
+from cardparser import Card, Color, Gems, load_deck
 
 MAX_GEMS = 7
 GOAL_PTS = 15
 
 
 def possible_buys(deck: List[Card]) -> Dict[Gems, List[Card]]:
-    gem_combs = product(range(MAX_GEMS + 1), repeat=len(COLORS))
+    # noinspection PyTypeChecker
+    gem_combs = product(range(MAX_GEMS + 1), repeat=len(Color))
     less_or_equal = lambda t1, t2: all(i <= j for i, j in zip(t1, t2))
     get_buys = lambda comb: [c for c in deck if less_or_equal(c.cost, comb)]
     return {comb: get_buys(comb) for comb in gem_combs}
