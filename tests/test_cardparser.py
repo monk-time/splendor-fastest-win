@@ -2,6 +2,16 @@ import pytest
 
 from cardparser import Card, Color, Gems, load_deck
 
+
+def test_gems():
+    a = Gems((0, 1, 0, 2, 0))
+    b = Gems((3, 0, 1, 1, 0))
+    assert a + b == Gems((3, 1, 1, 3, 0))
+    assert a - b == Gems((-3, 1, -1, 1, 0))
+    assert type(a + b) == type(a - b) == Gems
+    assert repr(a) == 'Gems((0, 1, 0, 2, 0))'
+
+
 # CSV header: White,Blue,Green,Red,Black,Pt,Bonus
 samples = (
     ('0,0,0,2,1,0,White',
