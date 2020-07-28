@@ -1,23 +1,44 @@
+import pickle
 from collections import deque
 from itertools import permutations, product
+from pathlib import Path
 from typing import Dict, List
 
-from cardparser import Card, Color, Gems, load_deck
+from cardparser import COLOR_NUM, Card, Gems, load_deck
 
 MAX_GEMS = 7
 GOAL_PTS = 15
 
+BUYS_PATH = Path(__file__).parent / 'buys.pickle'
 
-def possible_buys(deck: List[Card]) -> Dict[Gems, List[Card]]:
-    # noinspection PyTypeChecker
-    gem_combs = product(range(MAX_GEMS + 1), repeat=len(Color))
+Buys = Dict[Gems, List[Card]]
+
+
+def possible_buys() -> Buys:
+    deck = load_deck()
+    gem_combs = map(Gems, product(range(MAX_GEMS + 1), repeat=COLOR_NUM))
     less_or_equal = lambda t1, t2: all(i <= j for i, j in zip(t1, t2))
     get_buys = lambda comb: [c for c in deck if less_or_equal(c.cost, comb)]
     return {comb: get_buys(comb) for comb in gem_combs}
 
 
-deck = load_deck()
-buys = possible_buys(deck)
+def store_buys(buys: Buys):
+    with open(BUYS_PATH, 'wb') as f:
+        pickle.dump(buys, f, pickle.HIGHEST_PROTOCOL)
+
+
+def load_buys(update: bool = False) -> Buys:
+    if not BUYS_PATH.exists() or update:
+        print('Generating buys...')
+        buys = possible_buys()
+        print('Pickling buys...')
+        store_buys(buys)
+        print('Pickling finished.')
+        return buys
+
+    with open(BUYS_PATH, 'rb') as f:
+        print('Unpickling buys...')
+        return pickle.load(f)
 
 
 class State:
@@ -38,6 +59,8 @@ class State:
     from_supply_2: List[Gems] = list(map(Gems, set(permutations((2, 0, 0, 0, 0)))))
 
     def __iter__(self):
+        buys = load_buys()
+
         # Possible actions:
         # 1. Buy 1 card
         for card in buys[self.gems]:
@@ -74,13 +97,15 @@ class State:
 
 
 if __name__ == '__main__':
-    st = State(cards=[deck[40], deck[5], deck[21]])
-    print(repr(st))
-    print(st.canonical())
+    # deck = load_deck()
+    # st = State(cards=[deck[40], deck[5], deck[21]])
+    # print(repr(st))
+    # print(st.canonical())
 
     # import pprint
-    # with open('temp.txt', mode='w') as f:
+    #
+    # buys = load_buys(update=True)
+    # with open('buys.txt', mode='w') as f:
+    #     print('Writing buys to a text file...')
     #     f.write(pprint.pformat(buys))
-    # import pickle
-    # with open('data.pickle', 'wb') as f:
-    #     pickle.dump(buys, f, pickle.HIGHEST_PROTOCOL)
+    pass

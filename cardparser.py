@@ -17,6 +17,10 @@ class Color(Enum):
         return self.__str__()
 
 
+# noinspection PyTypeChecker
+COLOR_NUM = len(Color)
+
+
 class Gems(tuple):
     def __add__(self, other):
         return Gems(map(sum, zip(self, other)))
