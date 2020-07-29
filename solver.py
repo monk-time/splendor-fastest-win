@@ -11,22 +11,21 @@ GOAL_PTS = 15
 
 
 class State:
-    def __init__(self, gems=None, cards=None, bonus=None, turn=0):
-        self.turn: int = turn
-        self.gems: Gems = gems if gems else Gems((0,) * COLOR_NUM)
-        if cards is None:
-            self.cards: Tuple[Card, ...] = ()
-            self.bonus: Gems = Gems((0,) * COLOR_NUM)
-            return
-        # Cards are guaranteed to be sorted by sort_cards().
-        self.cards: Tuple[Card, ...] = tuple(cards)
-        self.cards = sort_cards(self.cards)
-        # Bonus is guaranteed to be recalculated with every new card
-        if bonus is None:
+    def __init__(self, cards=None, bonus=None, gems=None, turn=0):
+        if cards is None:  # empty state
+            cards = ()
+            bonus = Gems((0,) * COLOR_NUM)
+        elif bonus is None:  # init. from cards
+            cards = sort_cards(cards)
             bonus = [0] * COLOR_NUM
-            for c in self.cards:
+            for c in cards:
                 bonus[c.bonus.value] += 1
-        self.bonus: Gems = Gems(bonus)
+            bonus = Gems(bonus)
+
+        self.cards: Tuple[Card, ...] = cards
+        self.bonus: Gems = bonus
+        self.gems: Gems = gems if gems else Gems((0,) * COLOR_NUM)
+        self.turn: int = turn
 
     def __repr__(self):  # a string representation for printing
         if self.cards:
@@ -52,7 +51,7 @@ class State:
             i = card.bonus.value
             bonus = Gems(self.bonus[:i] + (self.bonus[i] + 1,) +
                          self.bonus[i + 1:])
-            yield State(gems=gems, cards=cards, bonus=bonus, turn=self.turn + 1)
+            yield State(cards=cards, bonus=bonus, gems=gems, turn=self.turn + 1)
 
         # 2. Take 3 different chips (5*4*3 / 3! = 10 options)
         #    or 2 chips of the same color (5 options)
@@ -61,8 +60,8 @@ class State:
         # of gems in the game.
         for comb in self.from_supply_3 + self.from_supply_2:
             gems = self.gems + comb
-            yield State(gems=gems, cards=self.cards, bonus=self.bonus,
-                        turn=self.turn + 1)
+            yield State(cards=self.cards, bonus=self.bonus,
+                        gems=gems, turn=self.turn + 1)
 
     def solve(self, depth_first=False):
         queue = deque([self])

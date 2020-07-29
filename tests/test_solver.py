@@ -8,7 +8,7 @@ deck = load_deck()
 
 @pytest.fixture
 def state1():
-    return State(gems=Gems((1, 2, 0, 0, 3)), cards=(deck[40], deck[5], deck[21]))
+    return State(cards=(deck[40], deck[5], deck[21]), gems=Gems((1, 2, 0, 0, 3)))
 
 
 def test_state_init(state1):
