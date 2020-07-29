@@ -16,4 +16,3 @@ class Color(Enum):
 COLOR_NUM = len(Color)
 
 MAX_GEMS = 7
-GOAL_PTS = 15

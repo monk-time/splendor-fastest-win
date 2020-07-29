@@ -4,15 +4,17 @@ from functools import cached_property
 from pathlib import Path
 from typing import Iterable, List, Tuple
 
-from consts import Color
+from consts import Color, MAX_GEMS
 
 
 class Gems(tuple):
-    def __add__(self, other):
-        return Gems(map(sum, zip(self, other)))
+    def __add__(self, other) -> 'Gems':
+        # Any gem value of a card or a player's stash can never exceed MAX_GEMS
+        return Gems(min(x + y, MAX_GEMS) for x, y in zip(self, other))
 
-    def __sub__(self, other):
-        return self.__add__(-x for x in other)
+    def __sub__(self, other) -> 'Gems':
+        # Any gem value of a card or a player's stash can never go below 0
+        return Gems(max(x - y, 0) for x, y in zip(self, other))
 
     def __repr__(self):
         return f'{self.__class__.__name__}({super().__repr__()})'

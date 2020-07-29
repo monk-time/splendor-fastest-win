@@ -6,13 +6,13 @@ from cardparser import Card, Color, Gems, load_deck, sort_cards
 
 
 def test_gems():
-    a = Gems((0, 1, 0, 2, 0))
-    b = Gems((3, 0, 1, 1, 0))
-    assert a + b == Gems((3, 1, 1, 3, 0))
-    assert a - b == Gems((-3, 1, -1, 1, 0))
+    a = Gems((0, 1, 0, 5, 0))
+    b = Gems((3, 0, 1, 4, 0))
+    assert a + b == Gems((3, 1, 1, 7, 0))
+    assert a - b == Gems((0, 1, 0, 1, 0))
     assert type(a + b) == Gems
     assert type(a - b) == Gems
-    assert repr(a) == 'Gems((0, 1, 0, 2, 0))'
+    assert repr(a) == 'Gems((0, 1, 0, 5, 0))'
 
 
 # CSV header: White,Blue,Green,Red,Black,Pt,Bonus
