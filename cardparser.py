@@ -1,24 +1,10 @@
 import csv
 from dataclasses import dataclass
-from enum import Enum
 from functools import cached_property
 from pathlib import Path
 from typing import List
 
-
-class Color(Enum):
-    WHITE = 0
-    BLUE = 1
-    GREEN = 2
-    RED = 3
-    BLACK = 4
-
-    def __repr__(self):
-        return self.__str__()
-
-
-# noinspection PyTypeChecker
-COLOR_NUM = len(Color)
+from consts import Color
 
 
 class Gems(tuple):
