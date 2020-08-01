@@ -1,13 +1,18 @@
 import time
 from collections import deque
 from itertools import permutations
-from typing import List, Tuple
+from typing import Tuple
 
 from buys import get_buys
 from cardparser import Card, Gems, sort_cards
 from consts import COLOR_NUM
 
-GOAL_PTS = 15
+GOAL_PTS = 5
+
+get_combs = lambda t: tuple(map(Gems, sorted(set(permutations(t)), reverse=True)))
+supply_combs_3: Tuple[Gems, ...] = get_combs((1, 1, 1, 0, 0))
+supply_combs_2: Tuple[Gems, ...] = get_combs((2, 0, 0, 0, 0))
+supply_combs: Tuple[Gems, ...] = supply_combs_3 + supply_combs_2
 
 
 class State:
@@ -36,9 +41,6 @@ class State:
     def isgoal(self):
         return sum(card.pt for card in self.cards) >= GOAL_PTS
 
-    from_supply_3: List[Gems] = list(map(Gems, set(permutations((1, 1, 1, 0, 0)))))
-    from_supply_2: List[Gems] = list(map(Gems, set(permutations((2, 0, 0, 0, 0)))))
-
     def __iter__(self):
         # Possible actions:
         # 1. Buy 1 card
@@ -58,7 +60,7 @@ class State:
         # Assuming the best scenario, there's no need to track gems
         # in the pool, since we are only limited by the total number
         # of gems in the game.
-        for comb in self.from_supply_3 + self.from_supply_2:
+        for comb in supply_combs:
             gems = self.gems + comb
             yield State(cards=self.cards, bonus=self.bonus,
                         gems=gems, turn=self.turn + 1)
