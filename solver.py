@@ -34,9 +34,9 @@ class State:
 
     def __repr__(self):  # a string representation for printing
         if self.cards:
-            return f'{self.gems} {"-".join(str(c) for c in self.cards)}'
+            return f'{self.gems!r} {"-".join(str(c) for c in self.cards)}'
         else:
-            return repr(self.gems)
+            return f'{self.gems!r}'
 
     def isgoal(self):
         return sum(card.pt for card in self.cards) >= GOAL_PTS
