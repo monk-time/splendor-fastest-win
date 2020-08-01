@@ -16,6 +16,9 @@ supply_combs: Tuple[Gems, ...] = supply_combs_3 + supply_combs_2
 
 
 class State:
+    # Based on Raymond Hettinger's generic puzzle solver:
+    # https://rhettinger.github.io/puzzle.html
+
     def __init__(self, cards=None, bonus=None, gems=None, turn=0):
         if cards is None:  # empty state
             cards = ()
