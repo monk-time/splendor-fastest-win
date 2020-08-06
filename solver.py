@@ -1,16 +1,10 @@
 import time
 from collections import deque
-from itertools import permutations
-from typing import Tuple
 
 from buys import get_buys
-from cardparser import Card, Cards, Gems, sort_cards
-from consts import COLOR_NUM
-
-get_combs = lambda t: tuple(map(Gems, sorted(set(permutations(t)), reverse=True)))
-supply_combs_3: Tuple[Gems, ...] = get_combs((1, 1, 1, 0, 0))
-supply_combs_2: Tuple[Gems, ...] = get_combs((2, 0, 0, 0, 0))
-supply_combs: Tuple[Gems, ...] = supply_combs_3 + supply_combs_2
+from cardparser import Card, Cards, sort_cards
+from color import COLOR_NUM
+from gems import Gems, MAX_GEMS, subtract_with_bonus, take_gems
 
 
 class State:
@@ -26,7 +20,7 @@ class State:
 
     @classmethod
     def newgame(cls) -> 'State':
-        no_gems = Gems((0,) * COLOR_NUM)
+        no_gems = [0] * COLOR_NUM
         return State(cards=(), bonus=no_gems, gems=no_gems, turn=0, pts=0)
 
     def __repr__(self):  # a string representation for printing
@@ -43,9 +37,8 @@ class State:
         # this method doesn't check if the player has enough gems to buy a card.
         cards = sort_cards((*self.cards, card))
         i = card.bonus.value
-        bonus = Gems(self.bonus[:i] + (self.bonus[i] + 1,) +
-                     self.bonus[i + 1:])
-        gems = self.gems - (card.cost - self.bonus)
+        bonus = self.bonus[:i] + [self.bonus[i] + 1] + self.bonus[i + 1:]
+        gems = subtract_with_bonus(self.gems, card.cost, self.bonus)
         pts = self.pts + card.pt
 
         return State(cards=cards, bonus=bonus, gems=gems,
@@ -54,7 +47,8 @@ class State:
     def __iter__(self):
         # Possible actions:
         # 1. Buy 1 card
-        for card in get_buys()[self.gems + self.bonus]:
+        key = tuple(min(x + y, MAX_GEMS) for x, y in zip(self.gems, self.bonus))
+        for card in get_buys()[key]:
             # Can't buy the same card twice
             if card in self.cards:
                 continue
@@ -66,8 +60,7 @@ class State:
         # Assuming the best scenario, there's no need to track gems
         # in the pool, since we are only limited by the total number
         # of gems in the game.
-        for comb in supply_combs:
-            gems = self.gems + comb
+        for gems in take_gems(self.gems):
             yield State(cards=self.cards, bonus=self.bonus,
                         gems=gems, turn=self.turn + 1, pts=self.pts)
 
@@ -105,4 +98,4 @@ if __name__ == '__main__':
     print(f'{total:.4g} sec')
 
     # import cProfile
-    # cProfile.run('State().solve()')
+    # cProfile.run('State.newgame().solve(goal_pts=4)')

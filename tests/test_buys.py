@@ -1,6 +1,7 @@
 from buys import BUYS_PATH, load_buys, possible_buys, store_buys
-from cardparser import Gems, load_deck
-from consts import COLOR_NUM, MAX_GEMS
+from cardparser import load_deck
+from color import COLOR_NUM
+from gems import MAX_GEMS
 
 buys = possible_buys()
 
@@ -9,9 +10,9 @@ def test_possible_buys():
     assert len(buys) == (MAX_GEMS + 1) ** COLOR_NUM
 
     deck = load_deck()
-    assert len(buys[Gems((7, 7, 7, 7, 7))]) == len(deck)
+    assert len(buys[(7, 7, 7, 7, 7)]) == len(deck)
 
-    buy_ids = lambda t: [c.card_id for c in buys[Gems(t)]]
+    buy_ids = lambda t: [c.card_id for c in buys[t]]
     assert buy_ids((0, 0, 0, 0, 0)) == []
     assert buy_ids((0, 0, 0, 0, 2)) == []
     assert buy_ids((0, 4, 0, 0, 0)) == ['0W3', '1K4']

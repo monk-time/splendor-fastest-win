@@ -14,5 +14,3 @@ class Color(Enum):
 
 # noinspection PyTypeChecker
 COLOR_NUM = len(Color)
-
-MAX_GEMS = 7
