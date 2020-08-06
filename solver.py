@@ -7,8 +7,6 @@ from buys import get_buys
 from cardparser import Card, Gems, sort_cards
 from consts import COLOR_NUM
 
-GOAL_PTS = 5
-
 get_combs = lambda t: tuple(map(Gems, sorted(set(permutations(t)), reverse=True)))
 supply_combs_3: Tuple[Gems, ...] = get_combs((1, 1, 1, 0, 0))
 supply_combs_2: Tuple[Gems, ...] = get_combs((2, 0, 0, 0, 0))
@@ -41,8 +39,8 @@ class State:
         else:
             return f'{self.gems!r}'
 
-    def isgoal(self):
-        return sum(card.pt for card in self.cards) >= GOAL_PTS
+    def total_pts(self):
+        return sum(card.pt for card in self.cards)
 
     def __iter__(self):
         # Possible actions:
@@ -68,14 +66,14 @@ class State:
             yield State(cards=self.cards, bonus=self.bonus,
                         gems=gems, turn=self.turn + 1)
 
-    def solve(self, depth_first=False):
+    def solve(self, depth_first=False, goal_pts: int = 15):
         queue = deque([self])
         trail = {repr(self): None}
         add_to_queue = queue.append if depth_first else queue.appendleft
 
         puzzle = self
         turn = 0
-        while not puzzle.isgoal():
+        while puzzle.total_pts() < goal_pts:
             for next_step in puzzle:
                 hash_ = repr(next_step)
                 if hash_ in trail:
@@ -97,6 +95,9 @@ class State:
 
 if __name__ == '__main__':
     start = time.time()
-    print(State().solve())
+    print(State().solve(goal_pts=4))
     total = time.time() - start
     print(f'{total:.4g} sec')
+
+    # import cProfile
+    # cProfile.run('State().solve()')

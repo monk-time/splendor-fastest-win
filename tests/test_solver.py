@@ -54,3 +54,28 @@ def test_state_iter(state1):
         'Gems((1, 2, 0, 2, 3)) 0W12-1B4-2W5',
         'Gems((1, 2, 0, 0, 5)) 0W12-1B4-2W5',
     }
+
+
+def test_state_solve4():
+    solution = [str(st) for st in State().solve(goal_pts=4)]
+    assert solution == [
+        'Gems((0, 0, 0, 0, 0))',
+        'Gems((1, 1, 1, 0, 0))',
+        'Gems((3, 1, 1, 0, 0))',
+        'Gems((5, 1, 1, 0, 0))',
+        'Gems((7, 1, 1, 0, 0))',
+        'Gems((0, 1, 1, 0, 0)) 4B7'
+    ]
+
+
+def test_state_solve5():
+    solution = [str(st) for st in State().solve(goal_pts=5)]
+    assert solution == [
+        'Gems((0, 0, 0, 0, 0))',
+        'Gems((1, 1, 1, 0, 0))',
+        'Gems((2, 2, 2, 0, 0))',
+        'Gems((3, 3, 3, 0, 0))',
+        'Gems((5, 3, 3, 0, 0))',
+        'Gems((7, 3, 3, 0, 0))',
+        'Gems((0, 0, 3, 0, 0)) 5B37'
+    ]
