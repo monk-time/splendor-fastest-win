@@ -45,7 +45,10 @@ class Card:
         return self.card_id
 
 
-def load_deck() -> Tuple[Card, ...]:
+Cards = Tuple[Card, ...]
+
+
+def load_deck() -> Cards:
     with open(Path(__file__).parent / 'cards.csv', encoding='utf-8') as f:
         reader = csv.reader(f)
         next(reader)  # skip the header
@@ -53,7 +56,7 @@ def load_deck() -> Tuple[Card, ...]:
     return sort_cards(cards)
 
 
-def sort_cards(cards: Iterable[Card]) -> Tuple[Card, ...]:
+def sort_cards(cards: Iterable[Card]) -> Cards:
     """Sort a deck of cards by total cost, then by points,
     then by card cost as a tuple, then by color."""
     key = lambda c: (sum(c.cost), c.pt, sorted(c.cost), c.bonus.value)

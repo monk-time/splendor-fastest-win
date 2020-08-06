@@ -4,7 +4,7 @@ from itertools import permutations
 from typing import Tuple
 
 from buys import get_buys
-from cardparser import Card, Gems, sort_cards
+from cardparser import Card, Cards, Gems, sort_cards
 from consts import COLOR_NUM
 
 get_combs = lambda t: tuple(map(Gems, sorted(set(permutations(t)), reverse=True)))
@@ -17,21 +17,17 @@ class State:
     # Based on Raymond Hettinger's generic puzzle solver:
     # https://rhettinger.github.io/puzzle.html
 
-    def __init__(self, cards=None, bonus=None, gems=None, turn=0):
-        if cards is None:  # empty state
-            cards = ()
-            bonus = Gems((0,) * COLOR_NUM)
-        elif bonus is None:  # init. from cards
-            cards = sort_cards(cards)
-            bonus = [0] * COLOR_NUM
-            for c in cards:
-                bonus[c.bonus.value] += 1
-            bonus = Gems(bonus)
-
-        self.cards: Tuple[Card, ...] = cards
+    def __init__(self, cards, bonus, gems, turn, pts):
+        self.cards: Cards = cards
         self.bonus: Gems = bonus
-        self.gems: Gems = gems if gems else Gems((0,) * COLOR_NUM)
+        self.gems: Gems = gems
         self.turn: int = turn
+        self.pts: int = pts
+
+    @classmethod
+    def newgame(cls) -> 'State':
+        no_gems = Gems((0,) * COLOR_NUM)
+        return State(cards=(), bonus=no_gems, gems=no_gems, turn=0, pts=0)
 
     def __repr__(self):  # a string representation for printing
         if self.cards:
@@ -39,8 +35,21 @@ class State:
         else:
             return f'{self.gems!r}'
 
-    def total_pts(self):
-        return sum(card.pt for card in self.cards)
+    def __eq__(self, other) -> bool:
+        return self.__dict__ == other.__dict__
+
+    def buy_card(self, card: Card) -> 'State':
+        # Because the simulation uses pre-generated table of possible buys,
+        # this method doesn't check if the player has enough gems to buy a card.
+        cards = sort_cards((*self.cards, card))
+        i = card.bonus.value
+        bonus = Gems(self.bonus[:i] + (self.bonus[i] + 1,) +
+                     self.bonus[i + 1:])
+        gems = self.gems - (card.cost - self.bonus)
+        pts = self.pts + card.pt
+
+        return State(cards=cards, bonus=bonus, gems=gems,
+                     turn=self.turn + 1, pts=pts)
 
     def __iter__(self):
         # Possible actions:
@@ -49,12 +58,8 @@ class State:
             # Can't buy the same card twice
             if card in self.cards:
                 continue
-            gems = self.gems - (card.cost - self.bonus)
-            cards = sort_cards((*self.cards, card))
-            i = card.bonus.value
-            bonus = Gems(self.bonus[:i] + (self.bonus[i] + 1,) +
-                         self.bonus[i + 1:])
-            yield State(cards=cards, bonus=bonus, gems=gems, turn=self.turn + 1)
+
+            yield self.buy_card(card)
 
         # 2. Take 3 different chips (5*4*3 / 3! = 10 options)
         #    or 2 chips of the same color (5 options)
@@ -64,7 +69,7 @@ class State:
         for comb in supply_combs:
             gems = self.gems + comb
             yield State(cards=self.cards, bonus=self.bonus,
-                        gems=gems, turn=self.turn + 1)
+                        gems=gems, turn=self.turn + 1, pts=self.pts)
 
     def solve(self, depth_first=False, goal_pts: int = 15):
         queue = deque([self])
@@ -73,7 +78,7 @@ class State:
 
         puzzle = self
         turn = 0
-        while puzzle.total_pts() < goal_pts:
+        while puzzle.pts < goal_pts:
             for next_step in puzzle:
                 hash_ = repr(next_step)
                 if hash_ in trail:
@@ -95,7 +100,7 @@ class State:
 
 if __name__ == '__main__':
     start = time.time()
-    print(State().solve(goal_pts=4))
+    print(State.newgame().solve(goal_pts=4))
     total = time.time() - start
     print(f'{total:.4g} sec')
 
