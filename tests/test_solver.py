@@ -80,26 +80,26 @@ def test_state_iter(state1):
     }
 
 
-def test_state_solve4():
-    solution = [str(st) for st in State.newgame().solve(goal_pts=4)]
+def test_state_solve3():
+    solution = [str(st) for st in State.newgame().solve(goal_pts=3)]
     assert solution == [
         '[0, 0, 0, 0, 0]',
         '[1, 1, 1, 0, 0]',
         '[3, 1, 1, 0, 0]',
         '[5, 1, 1, 0, 0]',
-        '[7, 1, 1, 0, 0]',
-        '[0, 1, 1, 0, 0] 4B7'
+        '[6, 2, 2, 0, 0]',
+        '[0, 2, 2, 0, 0] 3W6'
     ]
 
 
-def test_state_solve5():
-    solution = [str(st) for st in State.newgame().solve(goal_pts=5)]
+def test_state_solve4():
+    solution = [str(st) for st in State.newgame().solve(goal_pts=4)]
     assert solution == [
         '[0, 0, 0, 0, 0]',
         '[1, 1, 1, 0, 0]',
         '[2, 2, 2, 0, 0]',
         '[3, 3, 3, 0, 0]',
-        '[5, 3, 3, 0, 0]',
-        '[7, 3, 3, 0, 0]',
-        '[0, 0, 3, 0, 0] 5B37'
+        '[4, 3, 4, 0, 1]',
+        '[0, 1, 4, 0, 0] 2G124',
+        '[0, 1, 0, 0, 0] 2G5-2G124'
     ]

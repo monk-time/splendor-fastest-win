@@ -34,7 +34,8 @@ def take_gems(g: Gems) -> Iterable[Gems]:
 
     # Take 2 gems of the same color
     for i in range(COLOR_NUM):
-        if g[i] <= MAX_GEMS - 2:
+        # Rule: only if there are at least four tokens left of that color
+        if g[i] <= MAX_GEMS - 4:
             g[i] += 2
             yield g[:]
             g[i] -= 2

@@ -104,13 +104,12 @@ def test_take_gems():
     assert combs == []
 
     combs = list(take_gems([4, 6, 1, 7, 0]))
-    assert len(combs) == 7
+    assert len(combs) == 6
     assert combs == [
         [5, 7, 2, 7, 0],
         [5, 7, 1, 7, 1],
         [5, 6, 2, 7, 1],
         [4, 7, 2, 7, 1],
-        [6, 6, 1, 7, 0],
         [4, 6, 3, 7, 0],
         [4, 6, 1, 7, 2]
     ]
