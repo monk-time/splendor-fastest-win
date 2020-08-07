@@ -20,9 +20,16 @@ def is_valid(g: Gems) -> bool:
     return all(0 <= x <= MAX_GEMS for x in g)
 
 
+skip_neg = True
+
+
 def gem_getter(patterns: Iterable[Gems], check_for_2: bool = False):
     def take_gems_by_patterns(g: Gems) -> Iterable[Gems]:
         for p in chain(*map(get_combs, patterns)):
+            # Optimization: assume that you don't return gems
+            # in the optimal solution
+            if skip_neg and any(x < 0 for x in p):
+                continue
             # Rule: add 2 only if there are at least 4 tokens left of that color
             if check_for_2:
                 i = p.index(2)
