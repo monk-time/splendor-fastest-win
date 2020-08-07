@@ -17,7 +17,7 @@ class Card:
     @classmethod
     def from_row(cls, row: List[str]) -> 'Card':
         *cost, pt, bonus = row
-        return Card(cost=[int(x) for x in cost],
+        return Card(cost=tuple(int(x) for x in cost),
                     pt=int(pt),
                     bonus=Color[bonus.upper()])
 

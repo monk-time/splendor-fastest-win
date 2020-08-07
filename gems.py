@@ -1,44 +1,85 @@
-from typing import Iterable, List
+from itertools import chain, permutations, product
+from typing import Dict, Iterable, Tuple
 
 from color import COLOR_NUM
 
 MAX_GEMS = 7
 
-Gems = List[int]
+Gems = Tuple[int, ...]
+
+
+def get_combs(t: Gems) -> Tuple[Gems, ...]:
+    return tuple(map(tuple, sorted(set(permutations(t)), reverse=True)))
+
+
+def add(g1: Gems, g2: Gems) -> Gems:
+    return tuple(x + y for x, y in zip(g1, g2))
+
+
+def is_valid(g: Gems) -> bool:
+    return all(0 <= x <= MAX_GEMS for x in g)
+
+
+def gem_getter(patterns: Iterable[Gems], check_for_2: bool = False):
+    def take_gems_by_patterns(g: Gems) -> Iterable[Gems]:
+        for p in chain(*map(get_combs, patterns)):
+            # Rule: add 2 only if there are at least 4 tokens left of that color
+            if check_for_2:
+                i = p.index(2)
+                if g[i] > MAX_GEMS - 4:
+                    continue
+            g2 = add(g, p)
+            if is_valid(g2):
+                yield g2
+
+    return take_gems_by_patterns
+
+
+take_3_at_7 = gem_getter(((1, 1, 1, 0, 0),))
+take_3_at_8 = gem_getter(((1, 1, 1, -1, 0), (1, 1, 0, 0, 0)))
+take_3_at_9 = gem_getter(((1, 1, 1, -1, -1), (1, 1, -1, 0, 0), (1, 0, 0, 0, 0)))
+take_3_at_10 = gem_getter(((1, 1, -1, -1, 0), (1, -1, 0, 0, 0)))
+# Patterns for take_2_* should not repeat patterns for take_3
+take_2_at_8 = gem_getter(((2, 0, 0, 0, 0),), check_for_2=True)
+take_2_at_9 = gem_getter(((2, -1, 0, 0, 0),), check_for_2=True)
+take_2_at_10 = gem_getter(((2, -1, -1, 0, 0), (2, -2, 0, 0, 0)), check_for_2=True)
 
 
 def take_gems(g: Gems) -> Iterable[Gems]:
-    slots = [i for i in range(COLOR_NUM) if g[i] < MAX_GEMS]
-    n_slots = len(slots)
-    # Take 3 gems of different colors (if possible)
-    if not n_slots:
+    total = sum(g)
+    if total > 10:
         return
-    if n_slots < 3:
-        for i in slots:
-            g[i] += 1
-        yield g[:]
-        for i in slots:
-            g[i] -= 1
-    else:
-        # Each cycle is guaranteed to run at least once
-        for i in range(n_slots - 2):
-            g[slots[i]] += 1
-            for j in range(i + 1, n_slots - 1):
-                g[slots[j]] += 1
-                for k in range(j + 1, n_slots):
-                    g[slots[k]] += 1
-                    yield g[:]
-                    g[slots[k]] -= 1
-                g[slots[j]] -= 1
-            g[slots[i]] += -1
+
+    # Take 3 gems of different colors (if possible)
+    # Rule: a player must have no more than 10 gems at the end of the turn,
+    # else they must return gems (either old or newly taken) until they have 10.
+    if total <= 7:
+        yield from take_3_at_7(g)
+    elif total == 8:
+        yield from take_3_at_8(g)
+    elif total == 9:
+        yield from take_3_at_9(g)
+    elif total == 10:
+        yield from take_3_at_10(g)
 
     # Take 2 gems of the same color
-    for i in range(COLOR_NUM):
-        # Rule: only if there are at least four tokens left of that color
-        if g[i] <= MAX_GEMS - 4:
-            g[i] += 2
-            yield g[:]
-            g[i] -= 2
+    if total <= 8:
+        yield from take_2_at_8(g)
+    elif total == 9:
+        yield from take_2_at_9(g)
+    elif total == 10:
+        yield from take_2_at_10(g)
+
+
+_takes_cached = None
+
+
+def get_takes() -> Dict[Gems, Tuple[Gems, ...]]:
+    global _takes_cached
+    if not _takes_cached:
+        _takes_cached = {g: tuple(take_gems(g))
+                         for g in product(range(MAX_GEMS + 1), repeat=COLOR_NUM)}
+    return _takes_cached
 
 
 def subtract_with_bonus(gems: Gems, cost: Gems, bonus: Gems) -> Gems:
@@ -53,4 +94,4 @@ def subtract_with_bonus(gems: Gems, cost: Gems, bonus: Gems) -> Gems:
         if g < 0:
             g = 0
         res.append(g)
-    return res
+    return tuple(res)

@@ -1,15 +1,15 @@
 import pickle
 from itertools import product
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict
 
 from cardparser import Cards, load_deck
 from color import COLOR_NUM
-from gems import MAX_GEMS
+from gems import Gems, MAX_GEMS
 
 BUYS_PATH = Path(__file__).parent / 'buys.pickle'
 
-Buys = Dict[Tuple[int, ...], Cards]
+Buys = Dict[Gems, Cards]
 
 
 def possible_buys() -> Buys:

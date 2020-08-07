@@ -4,7 +4,7 @@ from collections import deque
 from buys import get_buys
 from cardparser import Card, Cards, sort_cards
 from color import COLOR_NUM
-from gems import Gems, MAX_GEMS, subtract_with_bonus, take_gems
+from gems import Gems, MAX_GEMS, get_takes, subtract_with_bonus
 
 
 class State:
@@ -20,7 +20,7 @@ class State:
 
     @classmethod
     def newgame(cls) -> 'State':
-        no_gems = [0] * COLOR_NUM
+        no_gems = (0,) * COLOR_NUM
         return State(cards=(), bonus=no_gems, gems=no_gems, turn=0, pts=0)
 
     def __repr__(self):  # a string representation for printing
@@ -37,7 +37,7 @@ class State:
         # this method doesn't check if the player has enough gems to buy a card.
         cards = sort_cards((*self.cards, card))
         i = card.bonus.value
-        bonus = self.bonus[:i] + [self.bonus[i] + 1] + self.bonus[i + 1:]
+        bonus = (self.bonus[:i] + (self.bonus[i] + 1,) + self.bonus[i + 1:])
         gems = subtract_with_bonus(self.gems, card.cost, self.bonus)
         pts = self.pts + card.pt
 
@@ -60,7 +60,7 @@ class State:
         # Assuming the best scenario, there's no need to track gems
         # in the pool, since we are only limited by the total number
         # of gems in the game.
-        for gems in take_gems(self.gems):
+        for gems in get_takes()[self.gems]:
             yield State(cards=self.cards, bonus=self.bonus,
                         gems=gems, turn=self.turn + 1, pts=self.pts)
 
@@ -71,6 +71,7 @@ class State:
 
         puzzle = self
         turn = 0
+        max_pts = 0
         while puzzle.pts < goal_pts:
             for next_step in puzzle:
                 hash_ = repr(next_step)
@@ -80,8 +81,11 @@ class State:
                 add_to_queue(next_step)
             puzzle = queue.pop()
             if puzzle.turn > turn:
-                turn = puzzle.turn
-                print(puzzle.turn, puzzle)
+                turn = max(turn, puzzle.turn)
+                print(f'{turn=}     {puzzle}')
+            if puzzle.pts > max_pts:
+                max_pts = max(max_pts, puzzle.pts)
+                print(f'{max_pts=}  {puzzle}')
 
         solution = deque()
         while puzzle:

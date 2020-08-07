@@ -12,5 +12,4 @@ class Color(Enum):
         return self.__str__()
 
 
-# noinspection PyTypeChecker
 COLOR_NUM = len(Color)
