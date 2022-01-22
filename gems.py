@@ -1,10 +1,10 @@
+from collections.abc import Iterable
 from functools import partial
 from itertools import chain, product
-from collections.abc import Iterable
 
 from more_itertools import distinct_permutations
 
-from color import COLOR_NUM
+from color import COLOR_NUM, Color
 
 MAX_GEMS = 7
 
@@ -121,3 +121,16 @@ def subtract_with_bonus(gems: Gems, cost: Gems, bonus: Gems) -> Gems:
             g = 0
         res.append(g)
     return tuple(res)
+
+
+single_gem_hands = (
+    (1, 0, 0, 0, 0),
+    (0, 1, 0, 0, 0),
+    (0, 0, 1, 0, 0),
+    (0, 0, 0, 1, 0),
+    (0, 0, 0, 0, 1),
+)
+
+
+def increase_bonus(bonus: Gems, color: Color) -> Gems:
+    return add(bonus, single_gem_hands[color.value])

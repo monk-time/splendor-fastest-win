@@ -4,7 +4,7 @@ from collections import deque
 from buys import get_buys
 from cardparser import Card, Cards, sort_cards
 from color import COLOR_NUM
-from gems import Gems, MAX_GEMS, get_takes, subtract_with_bonus
+from gems import Gems, MAX_GEMS, get_takes, increase_bonus, subtract_with_bonus
 
 
 class State:
@@ -36,8 +36,7 @@ class State:
         # Because the simulation uses pre-generated table of possible buys,
         # this method doesn't check if the player has enough gems to buy a card.
         cards = sort_cards((*self.cards, card))
-        i = card.bonus.value
-        bonus = (self.bonus[:i] + (self.bonus[i] + 1,) + self.bonus[i + 1:])
+        bonus = increase_bonus(self.bonus, card.bonus)
         gems = subtract_with_bonus(self.gems, card.cost, self.bonus)
         pts = self.pts + card.pt
 
@@ -81,10 +80,10 @@ class State:
                 add_to_queue(next_step)
             puzzle = queue.pop()
             if puzzle.turn > turn:
-                turn = max(turn, puzzle.turn)
+                turn = puzzle.turn
                 print(f'{turn=}     {puzzle}')
             if puzzle.pts > max_pts:
-                max_pts = max(max_pts, puzzle.pts)
+                max_pts = puzzle.pts
                 print(f'{max_pts=}  {puzzle}')
 
         solution = deque()

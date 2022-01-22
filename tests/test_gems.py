@@ -1,5 +1,5 @@
-from color import COLOR_NUM
-from gems import MAX_GEMS, get_takes, subtract_with_bonus, take_gems
+from color import COLOR_NUM, Color
+from gems import MAX_GEMS, get_takes, increase_bonus, subtract_with_bonus, take_gems
 
 
 def test_take_gems_for_7():
@@ -292,3 +292,8 @@ def test_subtract_with_bonus():
     assert subtract_with_bonus(gems=(1, 2, 0, 3, 1),
                                cost=(1, 0, 0, 2, 1),
                                bonus=(0, 1, 0, 1, 3)) == (0, 2, 0, 2, 1)
+
+
+def test_increase_bonus():
+    assert increase_bonus((0, 1, 0, 0, 2), Color.WHITE) == (1, 1, 0, 0, 2)
+    assert increase_bonus((0, 1, 0, 0, 2), Color.BLACK) == (0, 1, 0, 0, 3)
