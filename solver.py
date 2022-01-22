@@ -97,7 +97,7 @@ class State:
 
 if __name__ == '__main__':
     start = time.time()
-    print(State.newgame().solve(goal_pts=4))
+    print(State.newgame().solve(goal_pts=3))
     total = time.time() - start
     print(f'{total:.4g} sec')
 

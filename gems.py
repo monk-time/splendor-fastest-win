@@ -1,48 +1,74 @@
-from itertools import chain, permutations, product
-from typing import Dict, Iterable, Tuple
+from functools import partial
+from itertools import chain, product
+from collections.abc import Iterable
+
+from more_itertools import distinct_permutations
 
 from color import COLOR_NUM
 
 MAX_GEMS = 7
 
-Gems = Tuple[int, ...]
+Gems = tuple[int, ...]
+GemSets = tuple[Gems, ...]
 
 
-def get_combs(t: Gems) -> Tuple[Gems, ...]:
-    return tuple(map(tuple, sorted(set(permutations(t)), reverse=True)))
+def uniq_perms_for_all(patterns: GemSets) -> GemSets:
+    """Combine all unique permutations into one tuple."""
+    return tuple(chain(*map(distinct_permutations, patterns)))
+
+
+patterns_take_3_at = {
+    '7': uniq_perms_for_all(((1, 1, 1, 0, 0),)),
+    '8': uniq_perms_for_all(((1, 1, 1, -1, 0), (1, 1, 0, 0, 0))),
+    '9': uniq_perms_for_all(((1, 1, 1, -1, -1), (1, 1, -1, 0, 0), (1, 0, 0, 0, 0))),
+    '10': uniq_perms_for_all(((1, 1, -1, -1, 0), (1, -1, 0, 0, 0))),
+}
+
+patterns_take_2_at = {
+    '8': uniq_perms_for_all(((2, 0, 0, 0, 0),)),
+    '9': uniq_perms_for_all(((2, -1, 0, 0, 0),)),
+    '10': uniq_perms_for_all(((2, -1, -1, 0, 0), (2, -2, 0, 0, 0))),
+}
 
 
 def add(g1: Gems, g2: Gems) -> Gems:
-    return tuple(x + y for x, y in zip(g1, g2))
+    return (g1[0] + g2[0],
+            g1[1] + g2[1],
+            g1[2] + g2[2],
+            g1[3] + g2[3],
+            g1[4] + g2[4])
 
 
 def is_valid(g: Gems) -> bool:
     return all(0 <= x <= MAX_GEMS for x in g)
 
 
-def gem_getter(patterns: Iterable[Gems], check_for_2: bool = False):
-    def take_gems_by_patterns(g: Gems) -> Iterable[Gems]:
-        for p in chain(*map(get_combs, patterns)):
-            # Rule: add 2 only if there are at least 4 tokens left of that color
-            if check_for_2:
-                i = p.index(2)
-                if g[i] > MAX_GEMS - 4:
-                    continue
-            g2 = add(g, p)
-            if is_valid(g2):
-                yield g2
+def take_by_patterns(g: Gems, patterns: GemSets,
+                     check_for_2: bool = False) -> Iterable[Gems]:
+    for p in patterns:
+        # Rule: add 2 only if there are at least 4 tokens left of that color
+        # In case of solo play this means if a player has no more than 6
+        if check_for_2:
+            i = p.index(2)
+            if g[i] > MAX_GEMS - 4:
+                continue
+        g2 = add(g, p)
+        if is_valid(g2):
+            yield g2
 
-    return take_gems_by_patterns
+
+def factory(patterns: GemSets, check_for_2: bool = False):
+    return partial(take_by_patterns, patterns=patterns, check_for_2=check_for_2)
 
 
-take_3_at_7 = gem_getter(((1, 1, 1, 0, 0),))
-take_3_at_8 = gem_getter(((1, 1, 1, -1, 0), (1, 1, 0, 0, 0)))
-take_3_at_9 = gem_getter(((1, 1, 1, -1, -1), (1, 1, -1, 0, 0), (1, 0, 0, 0, 0)))
-take_3_at_10 = gem_getter(((1, 1, -1, -1, 0), (1, -1, 0, 0, 0)))
+take_3_at_7 = factory(patterns_take_3_at['7'])
+take_3_at_8 = factory(patterns_take_3_at['8'])
+take_3_at_9 = factory(patterns_take_3_at['9'])
+take_3_at_10 = factory(patterns_take_3_at['10'])
 # Patterns for take_2_* should not repeat patterns for take_3
-take_2_at_8 = gem_getter(((2, 0, 0, 0, 0),), check_for_2=True)
-take_2_at_9 = gem_getter(((2, -1, 0, 0, 0),), check_for_2=True)
-take_2_at_10 = gem_getter(((2, -1, -1, 0, 0), (2, -2, 0, 0, 0)), check_for_2=True)
+take_2_at_8 = factory(patterns_take_2_at['8'], check_for_2=True)
+take_2_at_9 = factory(patterns_take_2_at['9'], check_for_2=True)
+take_2_at_10 = factory(patterns_take_2_at['10'], check_for_2=True)
 
 
 def take_gems(g: Gems) -> Iterable[Gems]:
@@ -74,7 +100,7 @@ def take_gems(g: Gems) -> Iterable[Gems]:
 _takes_cached = None
 
 
-def get_takes() -> Dict[Gems, Tuple[Gems, ...]]:
+def get_takes() -> dict[Gems, tuple[Gems, ...]]:
     global _takes_cached
     if not _takes_cached:
         _takes_cached = {g: tuple(take_gems(g))
