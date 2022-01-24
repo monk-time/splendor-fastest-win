@@ -3,12 +3,12 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Dict
 
-from cardparser import Cards, get_deck
+from cardparser import Deck, get_deck
 from gems import Gems, all_gem_sets
 
 BUYS_PATH = Path(__file__).parent / 'buys.pickle'
 
-Buys = Dict[Gems, Cards]
+Buys = Dict[Gems, Deck]
 
 
 def possible_buys() -> Buys:

@@ -128,5 +128,6 @@ single_gem_hands = (
 )
 
 
+@lru_cache(maxsize=None)
 def increase_bonus(bonus: Gems, color: Color) -> Gems:
     return add(bonus, single_gem_hands[color.value])

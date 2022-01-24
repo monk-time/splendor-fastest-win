@@ -2,7 +2,7 @@ import time
 from collections import deque
 
 from buys import get_buys
-from cardparser import Card, Cards, sort_cards
+from cardparser import Card, Deck, sort_cards
 from color import COLOR_NUM
 from gems import Gems, MAX_GEMS, get_takes, increase_bonus, subtract_with_bonus
 
@@ -12,7 +12,7 @@ class State:
     # https://rhettinger.github.io/puzzle.html
 
     def __init__(self, cards, bonus, gems, turn, pts):
-        self.cards: Cards = cards
+        self.cards: Deck = cards
         self.bonus: Gems = bonus
         self.gems: Gems = gems
         self.turn: int = turn
