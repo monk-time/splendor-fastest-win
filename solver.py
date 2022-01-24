@@ -18,7 +18,7 @@ class State:
         self.gems: Gems = gems
         self.turn: int = turn
         self.pts: int = pts
-        self.hash: int = hash((self.cards, self.bonus, self.gems, self.turn))
+        self.hash: int = hash((self.cards, self.gems, self.turn))
 
     @classmethod
     def newgame(cls) -> 'State':
