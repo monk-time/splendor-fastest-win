@@ -1,8 +1,9 @@
 import time
+from bisect import insort
 from collections import deque
 
 from buys import get_buys
-from cardparser import Card, Deck, sort_cards
+from cardparser import Card, Deck
 from color import COLOR_NUM
 from gems import Gems, MAX_GEMS, get_takes, increase_bonus, subtract_with_bonus
 
@@ -39,7 +40,10 @@ class State:
     def buy_card(self, card: Card) -> 'State':
         # Because the simulation uses pre-generated table of possible buys,
         # this method doesn't check if the player has enough gems to buy a card.
-        cards = sort_cards((*self.cards, card))
+        cards_mut = list(self.cards)
+        # noinspection PyArgumentList
+        insort(cards_mut, card, key=lambda c: c.num)
+        cards = tuple(cards_mut)
         bonus = increase_bonus(self.bonus, card.bonus)
         gems = subtract_with_bonus(self.gems, card.cost, self.bonus)
         pts = self.pts + card.pt
