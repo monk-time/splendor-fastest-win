@@ -46,11 +46,11 @@ def test_all_ids_unique():
 
 def test_sort_cards():
     d = {str(c): c for c in deck}
-    # Sort by total cost
-    cards = (d['0W3'], d['0W22'], d['0W113'], d['3W6'], d['1W223'])
+    # Sort by points
+    cards = (d['0W3'], d['0W22'], d['0W113'], d['1W223'], d['3W6'])
     assert sort_cards((cards[i] for i in (4, 2, 1, 3, 0))) == cards
-    # Then by points
-    cards = (d['0W22'], d['1W4'], d['1W223'], d['2W124'], d['4W7'], d['3W3335'])
+    # Then by total cost
+    cards = (d['0W22'], d['1W4'], d['1W223'], d['2W124'], d['3W3335'], d['4W7'])
     assert sort_cards((cards[i] for i in (1, 0, 4, 3, 5, 2))) == cards
     # Then by card cost as a tuple
     cards = (d['0W22'], d['0W1111'], d['0W113'], d['0W122'], d['0W1112'])

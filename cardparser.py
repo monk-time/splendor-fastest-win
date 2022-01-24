@@ -48,8 +48,8 @@ def load_deck() -> Deck:
     with open(Path(__file__).parent / 'cards.csv', encoding='utf-8') as f:
         reader = csv.reader(f)
         next(reader)  # skip the header
-        cards = [Card.from_row(row, i) for i, row in enumerate(reader)]
-    return sort_cards(cards)
+        cards = tuple(Card.from_row(row, i) for i, row in enumerate(reader))
+    return cards
 
 
 @lru_cache(maxsize=None)
@@ -60,7 +60,7 @@ def get_deck() -> Deck:
 def sort_cards(cards: Iterable[Card]) -> Deck:
     """Sort a deck of cards by total cost, then by points,
     then by card cost as a tuple, then by color."""
-    key = lambda c: (sum(c.cost), c.pt, sorted(c.cost), c.bonus.value)
+    key = lambda c: (c.pt, sum(c.cost), sorted(c.cost), c.bonus.value)
     return tuple(sorted(cards, key=key))
 
 
