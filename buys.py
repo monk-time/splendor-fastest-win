@@ -1,4 +1,5 @@
 import pickle
+from functools import lru_cache
 from itertools import product
 from pathlib import Path
 from typing import Dict
@@ -39,14 +40,9 @@ def load_buys(update: bool = False) -> Buys:
         return pickle.load(f)
 
 
-_buys_cached = None
-
-
+@lru_cache(maxsize=None)
 def get_buys() -> Buys:
-    global _buys_cached
-    if not _buys_cached:
-        _buys_cached = load_buys()
-    return _buys_cached
+    return load_buys()
 
 
 if __name__ == '__main__':

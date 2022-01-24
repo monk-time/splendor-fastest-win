@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from functools import partial
+from functools import lru_cache, partial
 from itertools import chain, product
 
 from more_itertools import distinct_permutations
@@ -10,6 +10,8 @@ MAX_GEMS = 7
 
 Gems = tuple[int, ...]
 GemSets = tuple[Gems, ...]
+
+all_gem_sets: GemSets = tuple(product(range(MAX_GEMS + 1), repeat=COLOR_NUM))
 
 
 def uniq_perms_for_all(patterns: GemSets) -> GemSets:
@@ -97,15 +99,9 @@ def take_gems(g: Gems) -> Iterable[Gems]:
         yield from take_2_at_10(g)
 
 
-_takes_cached = None
-
-
+@lru_cache(maxsize=None)
 def get_takes() -> dict[Gems, tuple[Gems, ...]]:
-    global _takes_cached
-    if not _takes_cached:
-        _takes_cached = {g: tuple(take_gems(g))
-                         for g in product(range(MAX_GEMS + 1), repeat=COLOR_NUM)}
-    return _takes_cached
+    return {g: tuple(take_gems(g)) for g in all_gem_sets}
 
 
 def subtract_with_bonus(gems: Gems, cost: Gems, bonus: Gems) -> Gems:
