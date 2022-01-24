@@ -3,19 +3,19 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Dict
 
-from cardparser import Deck, get_deck
+from cardparser import CardNums, get_deck
 from gems import Gems, all_gem_sets
 
 BUYS_PATH = Path(__file__).parent / 'buys.pickle'
 
-Buys = Dict[Gems, Deck]
+Buys = Dict[Gems, CardNums]
 
 
 def possible_buys() -> Buys:
     deck = get_deck()
     less_or_equal = lambda t1, t2: all(i <= j for i, j in zip(t1, t2))
-    get_buys = lambda comb: tuple(c for c in deck if less_or_equal(c.cost, comb))
-    return {g: get_buys(g) for g in all_gem_sets}
+    gen_buys = lambda g: (c.num for c in deck if less_or_equal(c.cost, g))
+    return {g: tuple(gen_buys(g)) for g in all_gem_sets}
 
 
 def store_buys(buys: Buys):
@@ -43,9 +43,8 @@ def get_buys() -> Buys:
 
 
 if __name__ == '__main__':
-    import pprint
-
     buys = load_buys(update=True)
     with open('buys.txt', mode='w') as f:
         print('Writing buys to a text file...')
-        f.write(pprint.pformat(buys))
+        for g in buys:
+            f.write(f'{g}: {buys[g]}\n')

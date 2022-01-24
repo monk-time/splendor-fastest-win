@@ -2,7 +2,7 @@ import csv
 from dataclasses import dataclass
 from functools import cached_property, lru_cache
 from pathlib import Path
-from typing import Iterable, List, Tuple
+from typing import Iterable
 
 from color import Color
 from gems import Gems
@@ -16,7 +16,7 @@ class Card:
     num: int
 
     @classmethod
-    def from_row(cls, row: List[str], num: int) -> 'Card':
+    def from_row(cls, row: list[str], num: int) -> 'Card':
         *cost, pt, bonus = row
         return Card(cost=tuple(int(x) for x in cost),
                     pt=int(pt),
@@ -41,7 +41,8 @@ class Card:
         return self.num == other.num
 
 
-Deck = Tuple[Card, ...]
+Deck = tuple[Card, ...]
+CardNums = tuple[int, ...]
 
 
 def load_deck() -> Deck:

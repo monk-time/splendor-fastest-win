@@ -3,9 +3,11 @@ from bisect import insort
 from collections import deque
 
 from buys import get_buys
-from cardparser import Card, Deck
+from cardparser import CardNums, get_deck
 from color import COLOR_NUM
 from gems import Gems, MAX_GEMS, get_takes, increase_bonus, subtract_with_bonus
+
+deck = get_deck()
 
 
 class State:
@@ -13,7 +15,7 @@ class State:
     # https://rhettinger.github.io/puzzle.html
 
     def __init__(self, cards, bonus, gems, turn, pts):
-        self.cards: Deck = cards
+        self.cards: CardNums = cards
         self.bonus: Gems = bonus
         self.gems: Gems = gems
         self.turn: int = turn
@@ -27,7 +29,7 @@ class State:
 
     def __repr__(self):  # a string representation for printing
         if self.cards:
-            return f'{self.gems!r} {"-".join(str(c) for c in self.cards)}'
+            return f'{self.gems!r} {"-".join(str(deck[c]) for c in self.cards)}'
         else:
             return f'{self.gems!r}'
 
@@ -37,13 +39,14 @@ class State:
     def __eq__(self, other) -> bool:
         return self.hash == other.hash
 
-    def buy_card(self, card: Card) -> 'State':
+    def buy_card(self, card_num: int) -> 'State':
         # Because the simulation uses pre-generated table of possible buys,
         # this method doesn't check if the player has enough gems to buy a card.
         cards_mut = list(self.cards)
         # noinspection PyArgumentList
-        insort(cards_mut, card, key=lambda c: c.num)
+        insort(cards_mut, card_num)
         cards = tuple(cards_mut)
+        card = deck[card_num]
         bonus = increase_bonus(self.bonus, card.bonus)
         gems = subtract_with_bonus(self.gems, card.cost, self.bonus)
         pts = self.pts + card.pt
@@ -55,12 +58,12 @@ class State:
         # Possible actions:
         # 1. Buy 1 card
         key = tuple(min(x + y, MAX_GEMS) for x, y in zip(self.gems, self.bonus))
-        for card in get_buys()[key]:
+        for card_num in get_buys()[key]:
             # Can't buy the same card twice
-            if card in self.cards:
+            if card_num in self.cards:
                 continue
 
-            yield self.buy_card(card)
+            yield self.buy_card(card_num)
 
         # 2. Take 3 different chips (5*4*3 / 3! = 10 options)
         #    or 2 chips of the same color (5 options)
@@ -108,4 +111,4 @@ if __name__ == '__main__':
     print(f'{total:.4g} sec')
 
     # import cProfile
-    # cProfile.run('State.newgame().solve(goal_pts=4)')
+    # cProfile.run('State.newgame().solve(goal_pts=6)')
