@@ -1,5 +1,5 @@
 from buys import BUYS_PATH, load_buys, possible_buys, store_buys
-from cardparser import load_deck
+from cardparser import get_deck
 from color import COLOR_NUM
 from gems import MAX_GEMS
 
@@ -9,7 +9,7 @@ buys = possible_buys()
 def test_possible_buys():
     assert len(buys) == (MAX_GEMS + 1) ** COLOR_NUM
 
-    deck = load_deck()
+    deck = get_deck()
     assert len(buys[(7, 7, 7, 7, 7)]) == len(deck)
 
     buy_ids = lambda t: [c.card_id for c in buys[t]]

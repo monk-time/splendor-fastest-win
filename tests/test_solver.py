@@ -1,9 +1,9 @@
 import pytest
 
-from cardparser import load_deck
+from cardparser import get_deck
 from solver import State
 
-deck = load_deck()
+deck = get_deck()
 
 
 @pytest.fixture

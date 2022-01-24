@@ -1,12 +1,10 @@
 import pickle
 from functools import lru_cache
-from itertools import product
 from pathlib import Path
 from typing import Dict
 
-from cardparser import Cards, load_deck
-from color import COLOR_NUM
-from gems import Gems, MAX_GEMS
+from cardparser import Cards, get_deck
+from gems import Gems, all_gem_sets
 
 BUYS_PATH = Path(__file__).parent / 'buys.pickle'
 
@@ -14,11 +12,10 @@ Buys = Dict[Gems, Cards]
 
 
 def possible_buys() -> Buys:
-    deck = load_deck()
-    gem_combs = product(range(MAX_GEMS + 1), repeat=COLOR_NUM)
+    deck = get_deck()
     less_or_equal = lambda t1, t2: all(i <= j for i, j in zip(t1, t2))
     get_buys = lambda comb: tuple(c for c in deck if less_or_equal(c.cost, comb))
-    return {comb: get_buys(comb) for comb in gem_combs}
+    return {g: get_buys(g) for g in all_gem_sets}
 
 
 def store_buys(buys: Buys):

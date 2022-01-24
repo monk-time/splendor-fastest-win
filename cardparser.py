@@ -1,6 +1,6 @@
 import csv
 from dataclasses import dataclass
-from functools import cached_property
+from functools import cached_property, lru_cache
 from pathlib import Path
 from typing import Iterable, List, Tuple
 
@@ -42,6 +42,11 @@ def load_deck() -> Cards:
         next(reader)  # skip the header
         cards = [Card.from_row(row) for row in reader]
     return sort_cards(cards)
+
+
+@lru_cache(maxsize=None)
+def get_deck() -> Cards:
+    return load_deck()
 
 
 def sort_cards(cards: Iterable[Card]) -> Cards:
