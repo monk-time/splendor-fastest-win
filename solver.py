@@ -17,6 +17,7 @@ class State:
         self.gems: Gems = gems
         self.turn: int = turn
         self.pts: int = pts
+        self.hash: int = hash((self.cards, self.bonus, self.gems, self.turn))
 
     @classmethod
     def newgame(cls) -> 'State':
@@ -29,8 +30,11 @@ class State:
         else:
             return f'{self.gems!r}'
 
+    def __hash__(self):
+        return self.hash
+
     def __eq__(self, other) -> bool:
-        return self.__dict__ == other.__dict__
+        return self.hash == other.hash
 
     def buy_card(self, card: Card) -> 'State':
         # Because the simulation uses pre-generated table of possible buys,
@@ -65,7 +69,7 @@ class State:
 
     def solve(self, depth_first=False, goal_pts: int = 15):
         queue = deque([self])
-        trail = {repr(self): None}
+        trail = {self: None}
         add_to_queue = queue.append if depth_first else queue.appendleft
 
         puzzle = self
@@ -73,10 +77,9 @@ class State:
         max_pts = 0
         while puzzle.pts < goal_pts:
             for next_step in puzzle:
-                hash_ = repr(next_step)
-                if hash_ in trail:
+                if next_step in trail:
                     continue
-                trail[hash_] = puzzle
+                trail[next_step] = puzzle
                 add_to_queue(next_step)
             puzzle = queue.pop()
             if puzzle.turn > turn:
@@ -89,14 +92,14 @@ class State:
         solution = deque()
         while puzzle:
             solution.appendleft(puzzle)
-            puzzle = trail[repr(puzzle)]
+            puzzle = trail[puzzle]
 
         return list(solution)
 
 
 if __name__ == '__main__':
     start = time.time()
-    print(State.newgame().solve(goal_pts=3))
+    print(State.newgame().solve(goal_pts=4))
     total = time.time() - start
     print(f'{total:.4g} sec')
 
