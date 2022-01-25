@@ -104,19 +104,22 @@ def get_takes() -> dict[Gems, tuple[Gems, ...]]:
     return {g: tuple(take_gems(g)) for g in all_gem_sets}
 
 
-def subtract_with_bonus(gems: Gems, cost: Gems, bonus: Gems) -> Gems:
+def subtract_with_bonus(gems: Gems, cost: Gems, bonus: Gems) -> tuple[Gems, int]:
     # Assuming this function is never called with cost > gems
     # gems - (cost - bonus)
     res = []
+    saved = 0
     for i in range(COLOR_NUM):
         c = cost[i] - bonus[i]
         if c < 0:
             c = 0
+        if c < cost[i]:
+            saved += cost[i] - c
         g = gems[i] - c
         if g < 0:
             g = 0
         res.append(g)
-    return tuple(res)
+    return tuple(res), saved
 
 
 single_gem_hands = (

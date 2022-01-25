@@ -14,18 +14,19 @@ class State:
     # Based on Raymond Hettinger's generic puzzle solver:
     # https://rhettinger.github.io/puzzle.html
 
-    def __init__(self, cards, bonus, gems, turn, pts):
+    def __init__(self, cards, bonus, gems, turn, pts, saved):
         self.cards: CardNums = cards
         self.bonus: Gems = bonus
         self.gems: Gems = gems
         self.turn: int = turn
         self.pts: int = pts
+        self.saved: int = saved
         self.hash: int = hash((self.cards, self.gems, self.turn))
 
     @classmethod
     def newgame(cls) -> 'State':
         no_gems = (0,) * COLOR_NUM
-        return State(cards=(), bonus=no_gems, gems=no_gems, turn=0, pts=0)
+        return State(cards=(), bonus=no_gems, gems=no_gems, turn=0, pts=0, saved=0)
 
     def __repr__(self):  # a string representation for printing
         if self.cards:
@@ -48,11 +49,12 @@ class State:
         cards = tuple(cards_mut)
         card = deck[card_num]
         bonus = increase_bonus(self.bonus, card.bonus)
-        gems = subtract_with_bonus(self.gems, card.cost, self.bonus)
-        pts = self.pts + card.pt
+        gems, saved = subtract_with_bonus(self.gems, card.cost, self.bonus)
 
         return State(cards=cards, bonus=bonus, gems=gems,
-                     turn=self.turn + 1, pts=pts)
+                     turn=self.turn + 1,
+                     pts=self.pts + card.pt,
+                     saved=self.saved + saved)
 
     def __iter__(self):
         # Possible actions:
@@ -71,8 +73,8 @@ class State:
         # in the pool, since we are only limited by the total number
         # of gems in the game.
         for gems in get_takes()[self.gems]:
-            yield State(cards=self.cards, bonus=self.bonus,
-                        gems=gems, turn=self.turn + 1, pts=self.pts)
+            yield State(cards=self.cards, bonus=self.bonus, gems=gems,
+                        turn=self.turn + 1, pts=self.pts, saved=self.saved)
 
     def solve(self, depth_first=False, goal_pts: int = 15):
         queue = deque([self])
