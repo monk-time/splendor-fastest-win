@@ -1,6 +1,6 @@
 import time
 from bisect import insort
-from collections import deque
+from random import randint
 
 from buys import get_buys
 from cardparser import CardNums, get_deck
@@ -76,34 +76,43 @@ class State:
             yield State(cards=self.cards, bonus=self.bonus, gems=gems,
                         turn=self.turn + 1, pts=self.pts, saved=self.saved)
 
-    def solve(self, depth_first=False, goal_pts: int = 15):
-        queue = deque([self])
+    def solve(self, goal_pts: int = 15, use_heuristic: bool = False):
+        queue = [self]
         trail = {self: None}
-        add_to_queue = queue.append if depth_first else queue.appendleft
+        heuristic = lambda st: \
+            (st.saved ** 0.4) * (st.pts ** 2.5) + randint(1, 100) * 0.001
 
         puzzle = self
         turn = 0
         max_pts = 0
-        while puzzle.pts < goal_pts:
-            for next_step in puzzle:
-                if next_step in trail:
-                    continue
-                trail[next_step] = puzzle
-                add_to_queue(next_step)
-            puzzle = queue.pop()
-            if puzzle.turn > turn:
-                turn = puzzle.turn
-                print(f'{turn=}     {puzzle}')
-            if puzzle.pts > max_pts:
-                max_pts = puzzle.pts
-                print(f'{max_pts=}  {puzzle}')
+        while queue:
+            print(f'{turn=:<10} {queue[0]}')
+            next_queue = []
+            for puzzle in queue:
+                if puzzle.pts > max_pts:
+                    max_pts = puzzle.pts
+                    print(f'{max_pts=:<7} {puzzle}')
+                if puzzle.pts >= goal_pts:
+                    next_queue.clear()
+                    break
+                for next_step in puzzle:
+                    if next_step in trail:
+                        continue
+                    trail[next_step] = puzzle
+                    next_queue.append(next_step)
 
-        solution = deque()
+            if use_heuristic:
+                queue = sorted(next_queue, key=heuristic, reverse=True)[:500_000]
+            else:
+                queue = next_queue
+            turn += 1
+
+        solution = []
         while puzzle:
-            solution.appendleft(puzzle)
+            solution.append(puzzle)
             puzzle = trail[puzzle]
 
-        return list(solution)
+        return list(reversed(solution))
 
 
 if __name__ == '__main__':
