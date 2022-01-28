@@ -7,24 +7,28 @@ from typing import Iterable
 from color import Color
 from gems import Gems
 
+CardIndex = int
+CardIndices = tuple[CardIndex, ...]
+Deck = tuple['Card', ...]
+
 
 @dataclass(frozen=True)
 class Card:
     cost: Gems
     pt: int
     bonus: Color
-    num: int
+    index: int
 
     @classmethod
-    def from_row(cls, row: list[str], num: int) -> 'Card':
+    def from_row(cls, row: list[str], index: CardIndex) -> 'Card':
         *cost, pt, bonus = row
         return Card(cost=tuple(int(x) for x in cost),
                     pt=int(pt),
                     bonus=Color[bonus.upper()],
-                    num=num)
+                    index=index)
 
     @cached_property
-    def card_id(self) -> str:
+    def str_id(self) -> str:
         """Unique card id consists of the card's point value, one-letter color
         and a sorted list of its non-zero cost values."""
         bonus_short = self.bonus.name[0] if self.bonus is not Color.BLACK else 'K'
@@ -32,17 +36,13 @@ class Card:
         return ''.join((str(self.pt), bonus_short, nonzero_costs))
 
     def __str__(self):
-        return self.card_id
+        return self.str_id
 
     def __hash__(self):
-        return self.num
+        return self.index
 
     def __eq__(self, other):
-        return self.num == other.num
-
-
-Deck = tuple[Card, ...]
-CardNums = tuple[int, ...]
+        return self.index == other.index
 
 
 def load_deck() -> Deck:

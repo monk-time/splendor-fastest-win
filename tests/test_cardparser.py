@@ -7,16 +7,16 @@ from cardparser import Card, Color, load_deck, sort_cards
 # CSV header: White,Blue,Green,Red,Black,Pt,Bonus
 samples = (
     ('0,0,0,2,1,0,White',
-     Card(cost=(0, 0, 0, 2, 1), pt=0, bonus=Color.WHITE, num=0),
+     Card(cost=(0, 0, 0, 2, 1), pt=0, bonus=Color.WHITE, index=0),
      '0W12'),
     ('0,0,0,4,0,1,Blue',
-     Card(cost=(0, 0, 0, 4, 0), pt=1, bonus=Color.BLUE, num=0),
+     Card(cost=(0, 0, 0, 4, 0), pt=1, bonus=Color.BLUE, index=0),
      '1B4'),
     ('6,0,0,0,0,3,White',
-     Card(cost=(6, 0, 0, 0, 0), pt=3, bonus=Color.WHITE, num=0),
+     Card(cost=(6, 0, 0, 0, 0), pt=3, bonus=Color.WHITE, index=0),
      '3W6'),
     ('0,0,5,3,0,2,Black',
-     Card(cost=(0, 0, 5, 3, 0), pt=2, bonus=Color.BLACK, num=0),
+     Card(cost=(0, 0, 5, 3, 0), pt=2, bonus=Color.BLACK, index=0),
      '2K35'),
 )
 
@@ -28,7 +28,7 @@ def test_card_from_row(row, card, card_id):
 
 @pytest.mark.parametrize("row, card, card_id", samples)
 def test_card_id(row, card, card_id):
-    assert card.card_id == card_id
+    assert card.str_id == card_id
 
 
 deck = load_deck()
@@ -36,12 +36,12 @@ deck = load_deck()
 
 def test_load_deck():
     assert len(deck) == 90
-    assert deck[0] == Card(cost=(0, 3, 0, 0, 0), pt=0, bonus=Color.WHITE, num=0)
-    assert deck[-1] == Card(cost=(3, 3, 5, 3, 0), pt=3, bonus=Color.BLACK, num=89)
+    assert deck[0] == Card(cost=(0, 3, 0, 0, 0), pt=0, bonus=Color.WHITE, index=0)
+    assert deck[-1] == Card(cost=(3, 3, 5, 3, 0), pt=3, bonus=Color.BLACK, index=89)
 
 
 def test_all_ids_unique():
-    assert len(set(c.card_id for c in deck)) == len(deck)
+    assert len(set(c.str_id for c in deck)) == len(deck)
 
 
 def test_sort_cards():

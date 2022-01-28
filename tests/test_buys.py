@@ -12,7 +12,7 @@ def test_possible_buys():
     deck = get_deck()
     assert len(buys[(7, 7, 7, 7, 7)]) == len(deck)
 
-    buy_ids = lambda t: [deck[c].card_id for c in buys[t]]
+    buy_ids = lambda t: [deck[c].str_id for c in buys[t]]
     assert buy_ids((0, 0, 0, 0, 0)) == []
     assert buy_ids((0, 0, 0, 0, 2)) == []
     assert buy_ids((0, 4, 0, 0, 0)) == ['0W3', '1K4']

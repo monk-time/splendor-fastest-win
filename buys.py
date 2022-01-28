@@ -3,18 +3,18 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Dict
 
-from cardparser import CardNums, get_deck
+from cardparser import CardIndices, get_deck
 from gems import Gems, all_gem_sets
 
 BUYS_PATH = Path(__file__).parent / 'buys.pickle'
 
-Buys = Dict[Gems, CardNums]
+Buys = Dict[Gems, CardIndices]
 
 
 def possible_buys() -> Buys:
     deck = get_deck()
     less_or_equal = lambda t1, t2: all(i <= j for i, j in zip(t1, t2))
-    gen_buys = lambda g: (c.num for c in deck if less_or_equal(c.cost, g))
+    gen_buys = lambda g: (c.index for c in deck if less_or_equal(c.cost, g))
     return {g: tuple(gen_buys(g)) for g in all_gem_sets}
 
 

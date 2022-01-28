@@ -3,7 +3,7 @@ from bisect import insort
 from random import randint
 
 from buys import get_buys
-from cardparser import CardNums, get_deck
+from cardparser import CardIndices, get_deck
 from color import COLOR_NUM
 from gems import Gems, MAX_GEMS, get_takes, increase_bonus, subtract_with_bonus
 
@@ -15,7 +15,7 @@ class State:
     # https://rhettinger.github.io/puzzle.html
 
     def __init__(self, cards, bonus, gems, turn, pts, saved):
-        self.cards: CardNums = cards
+        self.cards: CardIndices = cards
         self.bonus: Gems = bonus
         self.gems: Gems = gems
         self.turn: int = turn
