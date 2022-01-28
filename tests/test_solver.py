@@ -27,17 +27,17 @@ def test_state_buy_card():
     st = st.buy_card(50)
     assert st == State(cards=(50,),
                        bonus=(1, 0, 0, 0, 0), gems=(4, 3, 0, 2, 2),
-                       turn=1, pts=2, saved=0)
+                       pts=2, saved=0)
 
     st = st.buy_card(6)
     assert st == State(cards=(6, 50),
                        bonus=(1, 1, 0, 0, 0), gems=(4, 3, 0, 2, 0),
-                       turn=2, pts=2, saved=1)
+                       pts=2, saved=1)
 
     st = st.buy_card(57)
     assert st == State(cards=(6, 50, 57),
                        bonus=(1, 1, 1, 0, 0), gems=(1, 2, 0, 2, 0),
-                       turn=3, pts=4, saved=3)
+                       pts=4, saved=3)
 
 
 def test_state_repr(state1):

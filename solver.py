@@ -14,11 +14,10 @@ class State:
     # Based on Raymond Hettinger's generic puzzle solver:
     # https://rhettinger.github.io/puzzle.html
 
-    def __init__(self, cards, bonus, gems, turn, pts, saved):
+    def __init__(self, cards, bonus, gems, pts, saved):
         self.cards: CardIndices = cards
         self.bonus: Gems = bonus
         self.gems: Gems = gems
-        self.turn: int = turn
         self.pts: int = pts
         self.saved: int = saved
         self.hash: int = hash((self.cards, self.gems))
@@ -26,7 +25,7 @@ class State:
     @classmethod
     def newgame(cls) -> 'State':
         no_gems = (0,) * COLOR_NUM
-        return State(cards=(), bonus=no_gems, gems=no_gems, turn=0, pts=0, saved=0)
+        return State(cards=(), bonus=no_gems, gems=no_gems, pts=0, saved=0)
 
     def __repr__(self):  # a string representation for printing
         if self.cards:
@@ -52,14 +51,21 @@ class State:
         gems, saved = subtract_with_bonus(self.gems, card.cost, self.bonus)
 
         return State(cards=cards, bonus=bonus, gems=gems,
-                     turn=self.turn + 1,
                      pts=self.pts + card.pt,
                      saved=self.saved + saved)
 
     def __iter__(self):
         # Possible actions:
         # 1. Buy 1 card
-        key = tuple(min(x + y, MAX_GEMS) for x, y in zip(self.gems, self.bonus))
+        g1, g2, g3, g4, g5 = self.gems
+        b1, b2, b3, b4, b5 = self.bonus
+        key = (
+            min(g1 + b1, MAX_GEMS),
+            min(g2 + b2, MAX_GEMS),
+            min(g3 + b3, MAX_GEMS),
+            min(g4 + b4, MAX_GEMS),
+            min(g5 + b5, MAX_GEMS),
+        )
         for card_num in get_buys()[key]:
             # Can't buy the same card twice
             if card_num in self.cards:
@@ -74,13 +80,13 @@ class State:
         # of gems in the game.
         for gems in get_takes()[self.gems]:
             yield State(cards=self.cards, bonus=self.bonus, gems=gems,
-                        turn=self.turn + 1, pts=self.pts, saved=self.saved)
+                        pts=self.pts, saved=self.saved)
 
     def solve(self, goal_pts: int = 15, use_heuristic: bool = False):
         queue = [self]
         trail = {self: None}
         heuristic = lambda st: \
-            (st.saved ** 0.4) * (st.pts ** 2.5) + randint(1, 100) * 0.001
+            (st.saved ** 0.4) * (st.pts ** 2.5) + randint(1, 100) * 0.01
 
         puzzle = self
         turn = 0
@@ -102,7 +108,7 @@ class State:
                     next_queue.append(next_step)
 
             if use_heuristic:
-                queue = sorted(next_queue, key=heuristic, reverse=True)[:400_000]
+                queue = sorted(next_queue, key=heuristic, reverse=True)[:300_000]
             else:
                 queue = next_queue
             turn += 1
