@@ -21,7 +21,7 @@ class State:
         self.turn: int = turn
         self.pts: int = pts
         self.saved: int = saved
-        self.hash: int = hash((self.cards, self.gems, self.turn))
+        self.hash: int = hash((self.cards, self.gems))
 
     @classmethod
     def newgame(cls) -> 'State':
@@ -102,7 +102,7 @@ class State:
                     next_queue.append(next_step)
 
             if use_heuristic:
-                queue = sorted(next_queue, key=heuristic, reverse=True)[:500_000]
+                queue = sorted(next_queue, key=heuristic, reverse=True)[:400_000]
             else:
                 queue = next_queue
             turn += 1
@@ -118,6 +118,7 @@ class State:
 if __name__ == '__main__':
     start = time.time()
     print(State.newgame().solve(goal_pts=4))
+    # print(State.newgame().solve(use_heuristic=True))
     total = time.time() - start
     print(f'{total:.4g} sec')
 
