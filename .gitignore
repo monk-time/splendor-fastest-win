@@ -1,5 +1,7 @@
 .idea
 __pycache__/
+.mypy_cache
+.pytest_cache
 
 buys.pickle
 buys.txt
