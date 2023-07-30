@@ -1,10 +1,15 @@
 from color import COLOR_NUM, Color
-from gems import MAX_GEMS, get_takes, increase_bonus, subtract_with_bonus, take_gems
+from gems import (
+    MAX_GEMS,
+    get_takes,
+    increase_bonus,
+    subtract_with_bonus,
+    take_gems,
+)
 
 
 def test_take_gems_for_7():
-    combs = tuple(take_gems(
-        (0, 0, 0, 0, 0)))
+    combs = tuple(take_gems((0, 0, 0, 0, 0)))
     assert combs == (
         (0, 0, 1, 1, 1),
         (0, 1, 0, 1, 1),
@@ -20,12 +25,11 @@ def test_take_gems_for_7():
         (0, 0, 0, 2, 0),
         (0, 0, 2, 0, 0),
         (0, 2, 0, 0, 0),
-        (2, 0, 0, 0, 0)
+        (2, 0, 0, 0, 0),
     )
     assert len(combs) == 15
 
-    combs = tuple(take_gems(
-        (6, 0, 0, 0, 0)))
+    combs = tuple(take_gems((6, 0, 0, 0, 0)))
     assert combs == (
         (6, 0, 1, 1, 1),
         (6, 1, 0, 1, 1),
@@ -40,7 +44,7 @@ def test_take_gems_for_7():
         (6, 0, 0, 0, 2),
         (6, 0, 0, 2, 0),
         (6, 0, 2, 0, 0),
-        (6, 2, 0, 0, 0)
+        (6, 2, 0, 0, 0),
     )
     assert len(combs) == 14
     assert len(tuple(take_gems((0, 6, 0, 0, 0)))) == 14
@@ -48,8 +52,7 @@ def test_take_gems_for_7():
     assert len(tuple(take_gems((0, 0, 0, 6, 0)))) == 14
     assert len(tuple(take_gems((0, 0, 0, 0, 6)))) == 14
 
-    combs = tuple(take_gems(
-        (7, 0, 0, 0, 0)))
+    combs = tuple(take_gems((7, 0, 0, 0, 0)))
     assert len(combs) == 8
     assert combs == (
         (7, 0, 1, 1, 1),
@@ -59,13 +62,12 @@ def test_take_gems_for_7():
         (7, 0, 0, 0, 2),
         (7, 0, 0, 2, 0),
         (7, 0, 2, 0, 0),
-        (7, 2, 0, 0, 0)
+        (7, 2, 0, 0, 0),
     )
     assert len(tuple(take_gems((0, 0, 7, 0, 0)))) == 8
     assert len(tuple(take_gems((0, 0, 0, 0, 7)))) == 8
 
-    combs = tuple(take_gems(
-        (0, 2, 1, 0, 1)))
+    combs = tuple(take_gems((0, 2, 1, 0, 1)))
     assert combs == (
         (0, 2, 2, 1, 2),
         (0, 3, 1, 1, 2),
@@ -81,14 +83,12 @@ def test_take_gems_for_7():
         (0, 2, 1, 2, 1),
         (0, 2, 3, 0, 1),
         (0, 4, 1, 0, 1),
-        (2, 2, 1, 0, 1)
+        (2, 2, 1, 0, 1),
     )
 
 
 def test_take_gems_at_8():
-    combs = tuple(take_gems(
-        (4, 0, 2, 1, 1)
-    ))
+    combs = tuple(take_gems((4, 0, 2, 1, 1)))
     for c in combs:
         assert sum(c) == 10
     assert combs == (
@@ -121,12 +121,10 @@ def test_take_gems_at_8():
         (4, 0, 2, 1, 3),
         (4, 0, 2, 3, 1),
         (4, 0, 4, 1, 1),
-        (4, 2, 2, 1, 1)
+        (4, 2, 2, 1, 1),
     )
 
-    combs = tuple(take_gems(
-        (0, 2, 6, 0, 0)
-    ))
+    combs = tuple(take_gems((0, 2, 6, 0, 0)))
     assert combs == (
         (0, 1, 7, 1, 1),
         (0, 3, 5, 1, 1),
@@ -149,14 +147,12 @@ def test_take_gems_at_8():
         (0, 2, 6, 0, 2),
         (0, 2, 6, 2, 0),
         (0, 4, 6, 0, 0),
-        (2, 2, 6, 0, 0)
+        (2, 2, 6, 0, 0),
     )
 
 
 def test_take_gems_at_9():
-    combs = tuple(take_gems(
-        (4, 0, 3, 1, 1)
-    ))
+    combs = tuple(take_gems((4, 0, 3, 1, 1)))
     for c in combs:
         assert sum(c) == 10
     assert combs == (
@@ -207,14 +203,12 @@ def test_take_gems_at_9():
         (4, 0, 5, 1, 0),
         (4, 2, 2, 1, 1),
         (4, 2, 3, 0, 1),
-        (4, 2, 3, 1, 0)
+        (4, 2, 3, 1, 0),
     )
 
 
 def test_take_gems_at_10():
-    combs = tuple(take_gems(
-        (0, 6, 0, 1, 3)
-    ))
+    combs = tuple(take_gems((0, 6, 0, 1, 3)))
     for c in combs:
         assert sum(c) == 10
     assert combs == (
@@ -253,17 +247,33 @@ def test_take_gems_at_10():
         (0, 6, 0, 3, 1),
         (0, 6, 2, 1, 1),
         (2, 4, 0, 1, 3),
-        (2, 6, 0, 1, 1)
+        (2, 6, 0, 1, 1),
     )
 
 
-gs = ((0, 0, 5, 1, 3), (2, 1, 0, 1, 3), (3, 2, 0, 0, 5),
-      (1, 1, 1, 2, 2), (0, 0, 1, 5, 2), (1, 0, 2, 1, 3),
-      (5, 3, 1, 1, 0), (3, 0, 1, 1, 1), (1, 2, 0, 4, 1),
-      (1, 3, 1, 0, 2), (2, 2, 0, 1, 3), (0, 2, 2, 2, 4),
-      (3, 0, 3, 1, 1), (0, 1, 0, 7, 2), (5, 3, 0, 1, 1),
-      (1, 2, 3, 0, 4), (2, 3, 0, 2, 3), (0, 1, 3, 2, 3),
-      (0, 6, 1, 1, 1), (1, 0, 0, 0, 6), (1, 5, 0, 1, 2))
+gs = (
+    (0, 0, 5, 1, 3),
+    (2, 1, 0, 1, 3),
+    (3, 2, 0, 0, 5),
+    (1, 1, 1, 2, 2),
+    (0, 0, 1, 5, 2),
+    (1, 0, 2, 1, 3),
+    (5, 3, 1, 1, 0),
+    (3, 0, 1, 1, 1),
+    (1, 2, 0, 4, 1),
+    (1, 3, 1, 0, 2),
+    (2, 2, 0, 1, 3),
+    (0, 2, 2, 2, 4),
+    (3, 0, 3, 1, 1),
+    (0, 1, 0, 7, 2),
+    (5, 3, 0, 1, 1),
+    (1, 2, 3, 0, 4),
+    (2, 3, 0, 2, 3),
+    (0, 1, 3, 2, 3),
+    (0, 6, 1, 1, 1),
+    (1, 0, 0, 0, 6),
+    (1, 5, 0, 1, 2),
+)
 
 
 def test_take_gems_size():
@@ -289,9 +299,9 @@ def test_get_takes():
 
 
 def test_subtract_with_bonus():
-    assert subtract_with_bonus(gems=(1, 2, 0, 3, 1),
-                               cost=(1, 0, 0, 2, 1),
-                               bonus=(0, 1, 0, 1, 3)) == ((0, 2, 0, 2, 1), 2)
+    assert subtract_with_bonus(
+        gems=(1, 2, 0, 3, 1), cost=(1, 0, 0, 2, 1), bonus=(0, 1, 0, 1, 3)
+    ) == ((0, 2, 0, 2, 1), 2)
 
 
 def test_increase_bonus():

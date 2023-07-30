@@ -22,7 +22,9 @@ def uniq_perms_for_all(patterns: GemSets) -> GemSets:
 patterns_take_3_at = {
     '7': uniq_perms_for_all(((1, 1, 1, 0, 0),)),
     '8': uniq_perms_for_all(((1, 1, 1, -1, 0), (1, 1, 0, 0, 0))),
-    '9': uniq_perms_for_all(((1, 1, 1, -1, -1), (1, 1, -1, 0, 0), (1, 0, 0, 0, 0))),
+    '9': uniq_perms_for_all(
+        ((1, 1, 1, -1, -1), (1, 1, -1, 0, 0), (1, 0, 0, 0, 0))
+    ),
     '10': uniq_perms_for_all(((1, 1, -1, -1, 0), (1, -1, 0, 0, 0))),
 }
 
@@ -34,19 +36,22 @@ patterns_take_2_at = {
 
 
 def add(g1: Gems, g2: Gems) -> Gems:
-    return (g1[0] + g2[0],
-            g1[1] + g2[1],
-            g1[2] + g2[2],
-            g1[3] + g2[3],
-            g1[4] + g2[4])
+    return (
+        g1[0] + g2[0],
+        g1[1] + g2[1],
+        g1[2] + g2[2],
+        g1[3] + g2[3],
+        g1[4] + g2[4],
+    )
 
 
 def is_valid(g: Gems) -> bool:
     return all(0 <= x <= MAX_GEMS for x in g)
 
 
-def take_by_patterns(g: Gems, patterns: GemSets,
-                     check_for_2: bool = False) -> Iterable[Gems]:
+def take_by_patterns(
+    g: Gems, patterns: GemSets, check_for_2: bool = False
+) -> Iterable[Gems]:
     for p in patterns:
         # Rule: add 2 only if there are at least 4 tokens left of that color
         # In case of solo play this means if a player has no more than 6
@@ -60,7 +65,9 @@ def take_by_patterns(g: Gems, patterns: GemSets,
 
 
 def factory(patterns: GemSets, check_for_2: bool = False):
-    return partial(take_by_patterns, patterns=patterns, check_for_2=check_for_2)
+    return partial(
+        take_by_patterns, patterns=patterns, check_for_2=check_for_2
+    )
 
 
 take_3_at_7 = factory(patterns_take_3_at['7'])
@@ -80,7 +87,7 @@ def take_gems(g: Gems) -> Iterable[Gems]:
 
     # Take 3 gems of different colors (if possible)
     # Rule: a player must have no more than 10 gems at the end of the turn,
-    # else they must return gems (either old or newly taken) until they have 10.
+    # else they must return gems (old or newly taken) until they have 10.
     if total <= 7:
         yield from take_3_at_7(g)
     elif total == 8:
@@ -104,7 +111,9 @@ def get_takes() -> dict[Gems, tuple[Gems, ...]]:
     return {g: tuple(take_gems(g)) for g in all_gem_sets}
 
 
-def subtract_with_bonus(gems: Gems, cost: Gems, bonus: Gems) -> tuple[Gems, int]:
+def subtract_with_bonus(
+    gems: Gems, cost: Gems, bonus: Gems
+) -> tuple[Gems, int]:
     # Assuming this function is never called with cost > gems
     # gems - (cost - bonus)
     res = []

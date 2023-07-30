@@ -22,16 +22,21 @@ class Card:
     @classmethod
     def from_row(cls, row: list[str], index: CardIndex) -> 'Card':
         *cost, pt, bonus = row
-        return Card(cost=tuple(int(x) for x in cost),
-                    pt=int(pt),
-                    bonus=Color[bonus.upper()],
-                    index=index)
+        return Card(
+            cost=tuple(int(x) for x in cost),
+            pt=int(pt),
+            bonus=Color[bonus.upper()],
+            index=index,
+        )
 
     @cached_property
     def str_id(self) -> str:
         """Unique card id consists of the card's point value, one-letter color
-        and a sorted list of its non-zero cost values."""
-        bonus_short = self.bonus.name[0] if self.bonus is not Color.BLACK else 'K'
+        and a sorted list of its non-zero cost values.
+        """
+        bonus_short = (
+            self.bonus.name[0] if self.bonus is not Color.BLACK else 'K'
+        )
         nonzero_costs = ''.join(sorted(str(x) for x in self.cost if x))
         return ''.join((str(self.pt), bonus_short, nonzero_costs))
 
@@ -60,7 +65,8 @@ def get_deck() -> Deck:
 
 def sort_cards(cards: Iterable[Card]) -> Deck:
     """Sort a deck of cards by total cost, then by points,
-    then by card cost as a tuple, then by color."""
+    then by card cost as a tuple, then by color.
+    """
     key = lambda c: (c.pt, sum(c.cost), sorted(c.cost), c.bonus.value)
     return tuple(sorted(cards, key=key))
 

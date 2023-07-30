@@ -1,7 +1,9 @@
-.idea
 __pycache__/
 .mypy_cache
 .pytest_cache
+
+.idea
+.vscode
 
 buys.pickle
 buys.txt

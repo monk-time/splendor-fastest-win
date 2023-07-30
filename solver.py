@@ -5,7 +5,7 @@ from random import randint
 from buys import get_buys
 from cardparser import CardIndices, get_deck
 from color import COLOR_NUM
-from gems import Gems, MAX_GEMS, get_takes, increase_bonus, subtract_with_bonus
+from gems import MAX_GEMS, Gems, get_takes, increase_bonus, subtract_with_bonus
 
 deck = get_deck()
 
@@ -29,9 +29,10 @@ class State:
 
     def __repr__(self):  # a string representation for printing
         if self.cards:
-            return f'{self.gems!r} {"-".join(str(deck[c]) for c in self.cards)}'
-        else:
-            return f'{self.gems!r}'
+            return (
+                f'{self.gems!r} {"-".join(str(deck[c]) for c in self.cards)}'
+            )
+        return f'{self.gems!r}'
 
     def __hash__(self):
         return self.hash
@@ -41,7 +42,7 @@ class State:
 
     def buy_card(self, card_num: int) -> 'State':
         # Because the simulation uses pre-generated table of possible buys,
-        # this method doesn't check if the player has enough gems to buy a card.
+        # this method doesn't check if player has enough gems to buy a card.
         cards_mut = list(self.cards)
         # noinspection PyArgumentList
         insort(cards_mut, card_num)
@@ -50,9 +51,13 @@ class State:
         bonus = increase_bonus(self.bonus, card.bonus)
         gems, saved = subtract_with_bonus(self.gems, card.cost, self.bonus)
 
-        return State(cards=cards, bonus=bonus, gems=gems,
-                     pts=self.pts + card.pt,
-                     saved=self.saved + saved)
+        return State(
+            cards=cards,
+            bonus=bonus,
+            gems=gems,
+            pts=self.pts + card.pt,
+            saved=self.saved + saved,
+        )
 
     def __iter__(self):
         # Possible actions:
@@ -79,14 +84,21 @@ class State:
         # in the pool, since we are only limited by the total number
         # of gems in the game.
         for gems in get_takes()[self.gems]:
-            yield State(cards=self.cards, bonus=self.bonus, gems=gems,
-                        pts=self.pts, saved=self.saved)
+            yield State(
+                cards=self.cards,
+                bonus=self.bonus,
+                gems=gems,
+                pts=self.pts,
+                saved=self.saved,
+            )
 
     def solve(self, goal_pts: int = 15, use_heuristic: bool = False):
         queue = [self]
         trail = {self: None}
-        heuristic = lambda st: \
-            (st.saved ** 0.4) * (st.pts ** 2.5) + randint(1, 100) * 0.01
+        heuristic = (
+            lambda st: (st.saved**0.4) * (st.pts**2.5)
+            + randint(1, 100) * 0.01
+        )
 
         puzzle = self
         turn = 0
@@ -107,10 +119,11 @@ class State:
                     trail[next_step] = puzzle
                     next_queue.append(next_step)
 
-            if use_heuristic:
-                queue = sorted(next_queue, key=heuristic, reverse=True)[:300_000]
-            else:
-                queue = next_queue
+            queue = (
+                sorted(next_queue, key=heuristic, reverse=True)[:300_000]
+                if use_heuristic
+                else next_queue
+            )
             turn += 1
 
         solution = []

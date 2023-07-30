@@ -17,7 +17,14 @@ def test_possible_buys():
     assert buy_ids((0, 0, 0, 0, 2)) == []
     assert buy_ids((0, 4, 0, 0, 0)) == ['0W3', '1K4']
     assert buy_ids((0, 0, 0, 2, 4)) == ['0B3', '0W12', '1G4']
-    assert buy_ids((4, 4, 0, 1, 0)) == ['0W3', '0R3', '0G12', '0K122', '1R4', '1K4']
+    assert buy_ids((4, 4, 0, 1, 0)) == [
+        '0W3',
+        '0R3',
+        '0G12',
+        '0K122',
+        '1R4',
+        '1K4',
+    ]
 
 
 def test_store_buys():

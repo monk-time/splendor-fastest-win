@@ -6,18 +6,26 @@ from cardparser import Card, Color, load_deck, sort_cards
 
 # CSV header: White,Blue,Green,Red,Black,Pt,Bonus
 samples = (
-    ('0,0,0,2,1,0,White',
-     Card(cost=(0, 0, 0, 2, 1), pt=0, bonus=Color.WHITE, index=0),
-     '0W12'),
-    ('0,0,0,4,0,1,Blue',
-     Card(cost=(0, 0, 0, 4, 0), pt=1, bonus=Color.BLUE, index=0),
-     '1B4'),
-    ('6,0,0,0,0,3,White',
-     Card(cost=(6, 0, 0, 0, 0), pt=3, bonus=Color.WHITE, index=0),
-     '3W6'),
-    ('0,0,5,3,0,2,Black',
-     Card(cost=(0, 0, 5, 3, 0), pt=2, bonus=Color.BLACK, index=0),
-     '2K35'),
+    (
+        '0,0,0,2,1,0,White',
+        Card(cost=(0, 0, 0, 2, 1), pt=0, bonus=Color.WHITE, index=0),
+        '0W12',
+    ),
+    (
+        '0,0,0,4,0,1,Blue',
+        Card(cost=(0, 0, 0, 4, 0), pt=1, bonus=Color.BLUE, index=0),
+        '1B4',
+    ),
+    (
+        '6,0,0,0,0,3,White',
+        Card(cost=(6, 0, 0, 0, 0), pt=3, bonus=Color.WHITE, index=0),
+        '3W6',
+    ),
+    (
+        '0,0,5,3,0,2,Black',
+        Card(cost=(0, 0, 5, 3, 0), pt=2, bonus=Color.BLACK, index=0),
+        '2K35',
+    ),
 )
 
 
@@ -36,8 +44,12 @@ deck = load_deck()
 
 def test_load_deck():
     assert len(deck) == 90
-    assert deck[0] == Card(cost=(0, 3, 0, 0, 0), pt=0, bonus=Color.WHITE, index=0)
-    assert deck[-1] == Card(cost=(3, 3, 5, 3, 0), pt=3, bonus=Color.BLACK, index=89)
+    assert deck[0] == Card(
+        cost=(0, 3, 0, 0, 0), pt=0, bonus=Color.WHITE, index=0
+    )
+    assert deck[-1] == Card(
+        cost=(3, 3, 5, 3, 0), pt=3, bonus=Color.BLACK, index=89
+    )
 
 
 def test_all_ids_unique():
@@ -50,7 +62,14 @@ def test_sort_cards():
     cards = (d['0W3'], d['0W22'], d['0W113'], d['1W223'], d['3W6'])
     assert sort_cards((cards[i] for i in (4, 2, 1, 3, 0))) == cards
     # Then by total cost
-    cards = (d['0W22'], d['1W4'], d['1W223'], d['2W124'], d['3W3335'], d['4W7'])
+    cards = (
+        d['0W22'],
+        d['1W4'],
+        d['1W223'],
+        d['2W124'],
+        d['3W3335'],
+        d['4W7'],
+    )
     assert sort_cards((cards[i] for i in (1, 0, 4, 3, 5, 2))) == cards
     # Then by card cost as a tuple
     cards = (d['0W22'], d['0W1111'], d['0W113'], d['0W122'], d['0W1112'])
