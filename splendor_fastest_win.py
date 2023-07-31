@@ -26,7 +26,7 @@ def cli():
     parser.add_argument(
         '-u',
         '--use_heuristic',
-        help='use a heuristic formula to limit the depth of BFS',
+        help='use a heuristic formula to limit the search space of BFS',
         action='store_true',
     )
     parser.add_argument(
