@@ -1,7 +1,7 @@
 # splendor-fastest-win
-An experimental tool to find fastest winning moves using bruteforce for the board game Splendor.
+An experimental tool to find fastest winning moves using bruteforce for the board game Splendor. It was born after a question on boardgames.stackexchange.com:
 
-This tool was born after a question on boardgames.stackexchange.com: [Q: What is the fastest possible game in Splendor?](https://boardgames.stackexchange.com/questions/44948/what-is-the-fastest-possible-game-in-splendor)
+[Q: What is the fastest possible game in Splendor?](https://boardgames.stackexchange.com/questions/44948/what-is-the-fastest-possible-game-in-splendor)
 
 The goal of the board game Splendor is to reach 15 points by either taking chips (gems) from the pool or buying cards with gems that give a permament gem bonus - a 1 gem discount for later buys.
 
