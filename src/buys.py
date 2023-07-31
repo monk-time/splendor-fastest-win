@@ -3,10 +3,10 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Dict
 
-from cardparser import CardIndices, get_deck
-from gems import Gems, all_gem_sets
+from src.cardparser import CardIndices, get_deck
+from src.gems import Gems, all_gem_sets
 
-BUYS_PATH = Path(__file__).parent / 'buys.pickle'
+BUYS_PATH = Path(__file__).parent.parent / 'buys.pickle'
 
 Buys = Dict[Gems, CardIndices]
 

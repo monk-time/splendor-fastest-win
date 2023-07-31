@@ -4,7 +4,7 @@ from itertools import chain, product
 
 from more_itertools import distinct_permutations
 
-from color import COLOR_NUM, Color
+from src.color import COLOR_NUM, Color
 
 MAX_GEMS = 7
 

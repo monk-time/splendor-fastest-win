@@ -4,8 +4,8 @@ from functools import cached_property, lru_cache
 from pathlib import Path
 from typing import Iterable
 
-from color import Color
-from gems import Gems
+from src.color import Color
+from src.gems import Gems
 
 CardIndex = int
 CardIndices = tuple[CardIndex, ...]
@@ -51,7 +51,9 @@ class Card:
 
 
 def load_deck() -> Deck:
-    with open(Path(__file__).parent / 'cards.csv', encoding='utf-8') as f:
+    with open(
+        Path(__file__).parent.parent / 'cards.csv', encoding='utf-8'
+    ) as f:
         reader = csv.reader(f)
         next(reader)  # skip the header
         cards = tuple(Card.from_row(row, i) for i, row in enumerate(reader))
@@ -69,9 +71,3 @@ def sort_cards(cards: Iterable[Card]) -> Deck:
     """
     key = lambda c: (c.pt, sum(c.cost), sorted(c.cost), c.bonus.value)
     return tuple(sorted(cards, key=key))
-
-
-if __name__ == '__main__':
-    deck = load_deck()
-    for card in deck:
-        print(card, repr(card))

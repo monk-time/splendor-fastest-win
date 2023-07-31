@@ -1,6 +1,6 @@
 import pytest
 
-from solver import State
+from src.solver import State
 
 
 @pytest.fixture

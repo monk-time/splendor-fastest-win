@@ -1,5 +1,5 @@
-from color import COLOR_NUM, Color
-from gems import (
+from src.color import COLOR_NUM, Color
+from src.gems import (
     MAX_GEMS,
     get_takes,
     increase_bonus,

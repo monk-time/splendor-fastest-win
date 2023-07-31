@@ -1,10 +1,10 @@
 from bisect import insort
 from random import randint
 
-from buys import get_buys
-from cardparser import CardIndices, get_deck
-from color import COLOR_NUM
-from gems import MAX_GEMS, Gems, get_takes, increase_bonus, subtract_with_bonus
+from src.buys import get_buys
+from src.cardparser import CardIndices, get_deck
+from src.color import COLOR_NUM
+from src.gems import MAX_GEMS, Gems, get_takes, increase_bonus, subtract_with_bonus
 
 deck = get_deck()
 

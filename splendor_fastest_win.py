@@ -8,9 +8,9 @@ for the board game Splendor.
 import argparse
 import sys
 
-from buys import export_buys_to_txt, load_buys
-from color import Color
-from solver import State
+from src.buys import export_buys_to_txt, load_buys
+from src.color import Color
+from src.solver import State
 
 
 def cli():

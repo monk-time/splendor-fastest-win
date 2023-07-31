@@ -2,7 +2,7 @@ from random import shuffle
 
 import pytest
 
-from cardparser import Card, Color, load_deck, sort_cards
+from src.cardparser import Card, Color, load_deck, sort_cards
 
 # CSV header: White,Blue,Green,Red,Black,Pt,Bonus
 samples = (
