@@ -42,8 +42,8 @@ def get_buys() -> Buys:
     return load_buys()
 
 
-if __name__ == '__main__':
-    buys = load_buys(update=True)
+def export_buys_to_txt():
+    buys = get_buys()
     with open('buys.txt', mode='w') as f:
         print('Writing buys to a text file...')
         for g in buys:

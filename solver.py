@@ -1,4 +1,3 @@
-import time
 from bisect import insort
 from random import randint
 
@@ -92,7 +91,9 @@ class State:
                 saved=self.saved,
             )
 
-    def solve(self, goal_pts: int = 15, use_heuristic: bool = False):
+    def solve(
+        self, goal_pts: int = 15, use_heuristic: bool = False
+    ) -> list['State']:
         queue = [self]
         trail = {self: None}
         heuristic = (
@@ -132,14 +133,3 @@ class State:
             puzzle = trail[puzzle]
 
         return list(reversed(solution))
-
-
-if __name__ == '__main__':
-    start = time.time()
-    print(State.newgame().solve(goal_pts=4))
-    # print(State.newgame().solve(use_heuristic=True))
-    total = time.time() - start
-    print(f'{total:.4g} sec')
-
-    # import cProfile
-    # cProfile.run('State.newgame().solve(goal_pts=6)')
