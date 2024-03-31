@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from functools import lru_cache, partial
+from functools import cache, partial
 from itertools import chain, product
 
 from more_itertools import distinct_permutations
@@ -22,9 +22,11 @@ def uniq_perms_for_all(patterns: GemSets) -> GemSets:
 patterns_take_3_at = {
     '7': uniq_perms_for_all(((1, 1, 1, 0, 0),)),
     '8': uniq_perms_for_all(((1, 1, 1, -1, 0), (1, 1, 0, 0, 0))),
-    '9': uniq_perms_for_all(
-        ((1, 1, 1, -1, -1), (1, 1, -1, 0, 0), (1, 0, 0, 0, 0))
-    ),
+    '9': uniq_perms_for_all((
+        (1, 1, 1, -1, -1),
+        (1, 1, -1, 0, 0),
+        (1, 0, 0, 0, 0),
+    )),
     '10': uniq_perms_for_all(((1, 1, -1, -1, 0), (1, -1, 0, 0, 0))),
 }
 
@@ -50,7 +52,7 @@ def is_valid(g: Gems) -> bool:
 
 
 def take_by_patterns(
-    g: Gems, patterns: GemSets, check_for_2: bool = False
+    g: Gems, patterns: GemSets, *, check_for_2: bool = False
 ) -> Iterable[Gems]:
     for p in patterns:
         # Rule: add 2 only if there are at least 4 tokens left of that color
@@ -64,7 +66,7 @@ def take_by_patterns(
             yield g2
 
 
-def factory(patterns: GemSets, check_for_2: bool = False):
+def factory(patterns: GemSets, *, check_for_2: bool = False):
     return partial(
         take_by_patterns, patterns=patterns, check_for_2=check_for_2
     )
@@ -106,7 +108,7 @@ def take_gems(g: Gems) -> Iterable[Gems]:
         yield from take_2_at_10(g)
 
 
-@lru_cache(maxsize=None)
+@cache
 def get_takes() -> dict[Gems, tuple[Gems, ...]]:
     return {g: tuple(take_gems(g)) for g in all_gem_sets}
 
@@ -140,6 +142,6 @@ single_gem_hands = (
 )
 
 
-@lru_cache(maxsize=None)
+@cache
 def increase_bonus(bonus: Gems, color: Color) -> Gems:
     return add(bonus, single_gem_hands[color.value])

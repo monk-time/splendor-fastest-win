@@ -4,7 +4,13 @@ from random import randint
 from src.buys import get_buys
 from src.cardparser import CardIndices, get_deck
 from src.color import COLOR_NUM
-from src.gems import MAX_GEMS, Gems, get_takes, increase_bonus, subtract_with_bonus
+from src.gems import (
+    MAX_GEMS,
+    Gems,
+    get_takes,
+    increase_bonus,
+    subtract_with_bonus,
+)
 
 deck = get_deck()
 
@@ -13,7 +19,7 @@ class State:
     # Based on Raymond Hettinger's generic puzzle solver:
     # https://rhettinger.github.io/puzzle.html
 
-    def __init__(self, cards, bonus, gems, pts, saved):
+    def __init__(self, cards, bonus, gems, pts, saved):  # noqa: PLR0913
         self.cards: CardIndices = cards
         self.bonus: Gems = bonus
         self.gems: Gems = gems
@@ -29,7 +35,7 @@ class State:
     def __repr__(self):  # a string representation for printing
         if self.cards:
             return (
-                f'{self.gems!r} {"-".join(str(deck[c]) for c in self.cards)}'
+                f'{self.gems!r} {'-'.join(str(deck[c]) for c in self.cards)}'
             )
         return f'{self.gems!r}'
 
@@ -92,13 +98,12 @@ class State:
             )
 
     def solve(
-        self, goal_pts: int = 15, use_heuristic: bool = False
+        self, goal_pts: int = 15, *, use_heuristic: bool = False
     ) -> list['State']:
-        queue = [self]
-        trail = {self: None}
+        queue: list[State] = [self]
+        trail: dict[State, State | None] = {self: None}
         heuristic = (
-            lambda st: (st.saved**0.4) * (st.pts**2.5)
-            + randint(1, 100) * 0.01
+            lambda st: (st.saved**0.4) * (st.pts**2.5) + randint(1, 100) * 0.01
         )
 
         puzzle = self

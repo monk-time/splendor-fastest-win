@@ -14,7 +14,7 @@ def state1():
 
 def test_state_newgame(state1):
     st = State.newgame()
-    assert st.cards == tuple()
+    assert st.cards == ()
     assert st.bonus == (0, 0, 0, 0, 0)
 
     assert state1.bonus == (2, 1, 0, 0, 0)
@@ -61,7 +61,7 @@ def test_state_repr(state1):
 
 
 def test_state_iter(state1):
-    next_steps = set(str(st) for st in state1)
+    next_steps = {str(st) for st in state1}
     assert next_steps == {
         '(2, 3, 0, 1, 3) 0W12-0B113-1W223',
         '(2, 2, 0, 1, 4) 0W12-0B113-1W223',

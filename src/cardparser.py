@@ -1,8 +1,8 @@
 import csv
+from collections.abc import Iterable
 from dataclasses import dataclass
-from functools import cached_property, lru_cache
+from functools import cache, cached_property
 from pathlib import Path
-from typing import Iterable
 
 from src.color import Color
 from src.gems import Gems
@@ -31,7 +31,9 @@ class Card:
 
     @cached_property
     def str_id(self) -> str:
-        """Unique card id consists of the card's point value, one-letter color
+        """Get a unique card id.
+
+        It consists of the card's point value, one-letter color
         and a sorted list of its non-zero cost values.
         """
         bonus_short = (
@@ -56,17 +58,18 @@ def load_deck() -> Deck:
     ) as f:
         reader = csv.reader(f)
         next(reader)  # skip the header
-        cards = tuple(Card.from_row(row, i) for i, row in enumerate(reader))
-    return cards
+        return tuple(Card.from_row(row, i) for i, row in enumerate(reader))
 
 
-@lru_cache(maxsize=None)
+@cache
 def get_deck() -> Deck:
     return load_deck()
 
 
 def sort_cards(cards: Iterable[Card]) -> Deck:
-    """Sort a deck of cards by total cost, then by points,
+    """Get a sorted a deck of cards.
+
+    The deck is sorted by total cost, then by points,
     then by card cost as a tuple, then by color.
     """
     key = lambda c: (c.pt, sum(c.cost), sorted(c.cost), c.bonus.value)

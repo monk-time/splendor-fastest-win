@@ -29,13 +29,13 @@ samples = (
 )
 
 
-@pytest.mark.parametrize("row, card, card_id", samples)
-def test_card_from_row(row, card, card_id):
+@pytest.mark.parametrize('row, card, card_id', samples)
+def test_card_from_row(row, card, card_id):  # noqa: ARG001
     assert Card.from_row(row.split(','), 0) == card
 
 
-@pytest.mark.parametrize("row, card, card_id", samples)
-def test_card_id(row, card, card_id):
+@pytest.mark.parametrize('row, card, card_id', samples)
+def test_card_id(row, card, card_id):  # noqa: ARG001
     assert card.str_id == card_id
 
 
@@ -53,14 +53,14 @@ def test_load_deck():
 
 
 def test_all_ids_unique():
-    assert len(set(c.str_id for c in deck)) == len(deck)
+    assert len({c.str_id for c in deck}) == len(deck)
 
 
 def test_sort_cards():
     d = {str(c): c for c in deck}
     # Sort by points
     cards = (d['0W3'], d['0W22'], d['0W113'], d['1W223'], d['3W6'])
-    assert sort_cards((cards[i] for i in (4, 2, 1, 3, 0))) == cards
+    assert sort_cards(cards[i] for i in (4, 2, 1, 3, 0)) == cards
     # Then by total cost
     cards = (
         d['0W22'],
@@ -70,15 +70,15 @@ def test_sort_cards():
         d['3W3335'],
         d['4W7'],
     )
-    assert sort_cards((cards[i] for i in (1, 0, 4, 3, 5, 2))) == cards
+    assert sort_cards(cards[i] for i in (1, 0, 4, 3, 5, 2)) == cards
     # Then by card cost as a tuple
     cards = (d['0W22'], d['0W1111'], d['0W113'], d['0W122'], d['0W1112'])
-    assert sort_cards((cards[i] for i in (0, 1, 4, 2, 3))) == cards
+    assert sort_cards(cards[i] for i in (0, 1, 4, 2, 3)) == cards
     # Then by color
     cards = (d['0W3'], d['0B3'], d['0G3'], d['0R3'], d['0K3'])
-    assert sort_cards((cards[i] for i in (3, 1, 4, 2, 0))) == cards
+    assert sort_cards(cards[i] for i in (3, 1, 4, 2, 0)) == cards
     # Full randomized check
     indices = [0, 5, 10, 16, 17, 25, 32, 41, 50, 64, 78, 89]
     cards = tuple(deck[i] for i in indices)
-    shuffle(indices[:])
-    assert sort_cards((deck[i] for i in indices)) == cards
+    shuffle(indices.copy())
+    assert sort_cards(deck[i] for i in indices) == cards

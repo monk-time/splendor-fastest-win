@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-"""
-An experimental tool to find fastest winning moves using bruteforce
-for the board game Splendor.
-"""
+"""A tool to bruteforce fastest winning moves for the board game Splendor."""
 
 import argparse
 import sys
@@ -57,7 +54,7 @@ def cli():
                 use_heuristic=args.use_heuristic,
             )
             print('\nSolution:')
-            print(f'({", ".join(c.name.title() for c in Color)}) Cards')
+            print(f'({', '.join(c.name.title() for c in Color)}) Cards')
             for state in solution:
                 print(state)
     except KeyboardInterrupt:

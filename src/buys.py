@@ -1,14 +1,13 @@
 import pickle
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
-from typing import Dict
 
 from src.cardparser import CardIndices, get_deck
 from src.gems import Gems, all_gem_sets
 
 BUYS_PATH = Path(__file__).parent.parent / 'buys.pickle'
 
-Buys = Dict[Gems, CardIndices]
+Buys = dict[Gems, CardIndices]
 
 
 def possible_buys() -> Buys:
@@ -23,7 +22,7 @@ def store_buys(buys: Buys):
         pickle.dump(buys, f, pickle.HIGHEST_PROTOCOL)
 
 
-def load_buys(update: bool = False) -> Buys:
+def load_buys(*, update: bool = False) -> Buys:
     if not BUYS_PATH.exists() or update:
         print('Generating buys...')
         buys = possible_buys()
@@ -37,14 +36,14 @@ def load_buys(update: bool = False) -> Buys:
         return pickle.load(f)
 
 
-@lru_cache(maxsize=None)
+@cache
 def get_buys() -> Buys:
     return load_buys()
 
 
 def export_buys_to_txt():
     buys = get_buys()
-    with open('buys.txt', mode='w') as f:
+    with open('buys.txt', mode='w', encoding='utf-8') as f:
         print('Writing buys to a text file...')
         for g in buys:
             f.write(f'{g}: {buys[g]}\n')
