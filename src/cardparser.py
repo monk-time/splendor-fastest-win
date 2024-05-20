@@ -11,6 +11,8 @@ CardIndex = int
 CardIndices = tuple[CardIndex, ...]
 Deck = tuple['Card', ...]
 
+DECK_PATH = Path(__file__).parent.parent / 'cards.csv'
+
 
 @dataclass(frozen=True)
 class Card:
@@ -53,9 +55,7 @@ class Card:
 
 
 def load_deck() -> Deck:
-    with open(
-        Path(__file__).parent.parent / 'cards.csv', encoding='utf-8'
-    ) as f:
+    with DECK_PATH.open(encoding='utf-8') as f:
         reader = csv.reader(f)
         next(reader)  # skip the header
         return tuple(Card.from_row(row, i) for i, row in enumerate(reader))

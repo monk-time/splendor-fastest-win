@@ -101,14 +101,14 @@ def test_state_solve3():
     ]
 
 
-# def test_state_solve4():
-#     solution = [str(st) for st in State.newgame().solve(goal_pts=4)]
-#     assert solution == [
-#         '(0, 0, 0, 0, 0)',
-#         '(0, 0, 1, 1, 1)',
-#         '(0, 0, 1, 1, 3)',
-#         '(0, 0, 1, 1, 5)',
-#         '(0, 0, 2, 2, 6)',
-#         '(0, 0, 0, 1, 6) 0K12',
-#         '(0, 0, 0, 1, 0) 0K12-4W7'
-#     ]
+def test_state_solve4():
+    solution = [str(st) for st in State.newgame().solve(goal_pts=4)]
+    assert solution == [
+        '(0, 0, 0, 0, 0)',
+        '(0, 0, 1, 1, 1)',
+        '(0, 0, 1, 1, 3)',
+        '(0, 0, 1, 1, 5)',
+        '(0, 0, 2, 2, 6)',
+        '(0, 0, 0, 1, 6) 0K12',
+        '(0, 0, 0, 1, 0) 0K12-4W7',
+    ]

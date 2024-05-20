@@ -18,7 +18,7 @@ def possible_buys() -> Buys:
 
 
 def store_buys(buys: Buys):
-    with open(BUYS_PATH, 'wb') as f:
+    with BUYS_PATH.open('wb') as f:
         pickle.dump(buys, f, pickle.HIGHEST_PROTOCOL)
 
 
@@ -31,7 +31,7 @@ def load_buys(*, update: bool = False) -> Buys:
         print('Pickling finished.')
         return buys
 
-    with open(BUYS_PATH, 'rb') as f:
+    with BUYS_PATH.open('rb') as f:
         print('Unpickling buys...')
         return pickle.load(f)
 
@@ -43,7 +43,7 @@ def get_buys() -> Buys:
 
 def export_buys_to_txt():
     buys = get_buys()
-    with open('buys.txt', mode='w', encoding='utf-8') as f:
+    with Path('buys.txt').open(mode='w', encoding='utf-8') as f:
         print('Writing buys to a text file...')
         for g in buys:
             f.write(f'{g}: {buys[g]}\n')

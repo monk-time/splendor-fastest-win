@@ -116,19 +116,15 @@ def get_takes() -> dict[Gems, tuple[Gems, ...]]:
 def subtract_with_bonus(
     gems: Gems, cost: Gems, bonus: Gems
 ) -> tuple[Gems, int]:
+    """Calculate `gems - (cost - bonus)`."""
     # Assuming this function is never called with cost > gems
-    # gems - (cost - bonus)
     res = []
     saved = 0
     for i in range(COLOR_NUM):
-        c = cost[i] - bonus[i]
-        if c < 0:
-            c = 0
+        c = max(cost[i] - bonus[i], 0)
         if c < cost[i]:
             saved += cost[i] - c
-        g = gems[i] - c
-        if g < 0:
-            g = 0
+        g = max(gems[i] - c, 0)
         res.append(g)
     return tuple(res), saved
 
