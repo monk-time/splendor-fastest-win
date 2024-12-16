@@ -1,2 +1,0 @@
-more-itertools==10.2.0
-pytest==8.1.1

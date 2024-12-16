@@ -54,7 +54,7 @@ def cli():
                 use_heuristic=args.use_heuristic,
             )
             print('\nSolution:')
-            print(f'({', '.join(c.name.title() for c in Color)}) Cards')
+            print(f'({", ".join(c.name.title() for c in Color)}) Cards')
             for state in solution:
                 print(state)
     except KeyboardInterrupt:

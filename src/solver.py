@@ -19,7 +19,7 @@ class State:
     # Based on Raymond Hettinger's generic puzzle solver:
     # https://rhettinger.github.io/puzzle.html
 
-    def __init__(self, cards, bonus, gems, pts, saved):  # noqa: PLR0913
+    def __init__(self, cards, bonus, gems, pts, saved):
         self.cards: CardIndices = cards
         self.bonus: Gems = bonus
         self.gems: Gems = gems
@@ -35,7 +35,7 @@ class State:
     def __repr__(self):  # a string representation for printing
         if self.cards:
             return (
-                f'{self.gems!r} {'-'.join(str(deck[c]) for c in self.cards)}'
+                f'{self.gems!r} {"-".join(str(deck[c]) for c in self.cards)}'
             )
         return f'{self.gems!r}'
 

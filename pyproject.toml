@@ -1,8 +1,26 @@
+[project]
+name = "splendor-fastest-win"
+version = "0.1.0"
+description = "Find fastest winning moves in Splendor"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "more-itertools>=10.5.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+]
+
 [tool.ruff]
-target-version = "py312"
+target-version = "py313"
 line-length = 79
 preview = true
 output-format = "concise" # preview mode switches this to full
+
+[tool.ruff.format]
+quote-style = "single"
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -15,24 +33,27 @@ ignore = [
     "Q",       # flake8-quotes               (conflicts with formatter)
     "T20",     # flake8-print                (prohibits print statements)
     "ISC001",  # single-line-implicit-string-concatenation (conflicts with formatter)
-    "PGH003",  # blanket-type-ignore         (PyLance doesn't provide error codes)
+    "PGH003",  # blanket-type-ignore         (Pylance doesn't provide error codes)
     "B905",    # zip-without-explicit-strict (makes zip too bulky)
     "E731",    # lambda-assignment           (precludes a concise functional style)
     "PLC0415", # import-outside-top-level    (sometimes imports in a function are necessary)
     "PLR2004", # magic-value-comparison      (demands too many constants)
+    "TD003",   # missing-todo-link           (too cumbersome)
+    "G004",    # logging-f-string            (pointless micro-optimization in most cases)
+    "DOC201",  # docstring-missing-returns   (excessive documentation)
+    "DOC402",  # docstring-missing-yields    (excessive documentation)
 ]
 allowed-confusables = [
     "а", "б", "в", "г", "е", "з", "и", "к", "м", "н", "о", "р", "с", "у", "ф", "х",
     "А", "Б", "В", "Г", "Е", "З", "И", "К", "М", "Н", "О", "Р", "С", "У", "Ф", "Х",
 ]
 
+[tool.ruff.lint.pycodestyle]
+max-line-length = 100 # don't report (E501) lines of length 80..100 that cannot be split by autoformatter
+
 [tool.ruff.lint.pydocstyle]
 convention = "pep257"
 
 [tool.ruff.lint.flake8-pytest-style]
-fixture-parentheses = false
 parametrize-names-type = "csv"
 parametrize-values-type = "tuple"
-
-[tool.ruff.format]
-quote-style = "single"

@@ -10,7 +10,7 @@ def test_possible_buys():
     assert len(buys) == (MAX_GEMS + 1) ** COLOR_NUM
 
     deck = get_deck()
-    assert len(buys[(7, 7, 7, 7, 7)]) == len(deck)
+    assert len(buys[7, 7, 7, 7, 7]) == len(deck)
 
     buy_ids = lambda t: [deck[c].str_id for c in buys[t]]
     assert buy_ids((0, 0, 0, 0, 0)) == []
