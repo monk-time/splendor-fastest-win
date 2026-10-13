@@ -30,12 +30,12 @@ samples = (
 
 
 @pytest.mark.parametrize('row, card, card_id', samples)
-def test_card_from_row(row, card, card_id):  # noqa: ARG001
+def test_card_from_row(row, card, card_id):  # ruff: ignore[unused-function-argument]
     assert Card.from_row(row.split(','), 0) == card
 
 
 @pytest.mark.parametrize('row, card, card_id', samples)
-def test_card_id(row, card, card_id):  # noqa: ARG001
+def test_card_id(row, card, card_id):  # ruff: ignore[unused-function-argument]
     assert card.str_id == card_id
 
 

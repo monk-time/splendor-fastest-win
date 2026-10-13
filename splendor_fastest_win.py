@@ -42,7 +42,7 @@ def cli():
         parser.print_help()
         parser.exit()
     args = parser.parse_args()
-    try:
+    try:  # ruff: ignore[too-many-statements-in-try-clause]
         if args.export:
             export_buys_to_txt()
             return

@@ -1,11 +1,15 @@
 import csv
-from collections.abc import Iterable
 from dataclasses import dataclass
 from functools import cache, cached_property
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from src.color import Color
-from src.gems import Gems
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from src.gems import Gems
 
 CardIndex = int
 CardIndices = tuple[CardIndex, ...]
@@ -22,7 +26,7 @@ class Card:
     index: int
 
     @classmethod
-    def from_row(cls, row: list[str], index: CardIndex) -> 'Card':
+    def from_row(cls, row: list[str], index: CardIndex) -> Card:
         *cost, pt, bonus = row
         return Card(
             cost=tuple(int(x) for x in cost),
@@ -33,7 +37,7 @@ class Card:
 
     @cached_property
     def str_id(self) -> str:
-        """Get a unique card id.
+        """A unique card id.
 
         It consists of the card's point value, one-letter color
         and a sorted list of its non-zero cost values.

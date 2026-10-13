@@ -3,7 +3,7 @@ name = "splendor-fastest-win"
 version = "0.1.0"
 description = "Find fastest winning moves in Splendor"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     "more-itertools>=10.5.0",
 ]
@@ -14,7 +14,7 @@ dev = [
 ]
 
 [tool.ruff]
-target-version = "py313"
+target-version = "py314"
 line-length = 79
 preview = true
 output-format = "concise" # preview mode switches this to full
@@ -32,16 +32,16 @@ ignore = [
     "CPY",     # flake8-copyright            (demands copyright notices)
     "Q",       # flake8-quotes               (conflicts with formatter)
     "T20",     # flake8-print                (prohibits print statements)
-    "ISC001",  # single-line-implicit-string-concatenation (conflicts with formatter)
-    "PGH003",  # blanket-type-ignore         (Pylance doesn't provide error codes)
-    "B905",    # zip-without-explicit-strict (makes zip too bulky)
-    "E731",    # lambda-assignment           (precludes a concise functional style)
-    "PLC0415", # import-outside-top-level    (sometimes imports in a function are necessary)
-    "PLR2004", # magic-value-comparison      (demands too many constants)
-    "TD003",   # missing-todo-link           (too cumbersome)
-    "G004",    # logging-f-string            (pointless micro-optimization in most cases)
-    "DOC201",  # docstring-missing-returns   (excessive documentation)
-    "DOC402",  # docstring-missing-yields    (excessive documentation)
+    "single-line-implicit-string-concatenation",  # (conflicts with formatter)
+    "blanket-type-ignore",                        # (Pylance doesn't provide error codes)
+    "zip-without-explicit-strict",                # (makes zip too bulky)
+    "lambda-assignment",                          # (precludes a concise functional style)
+    "import-outside-top-level",                   # (sometimes imports in a function are necessary)
+    "magic-value-comparison",                     # (demands too many constants)
+    "missing-todo-link",                          # (too cumbersome)
+    "logging-f-string",                           # (pointless micro-optimization in most cases)
+    "docstring-missing-returns",                  # (excessive documentation)
+    "docstring-missing-yields",                   # (excessive documentation)
 ]
 allowed-confusables = [
     "а", "б", "в", "г", "е", "з", "и", "к", "м", "н", "о", "р", "с", "у", "ф", "х",

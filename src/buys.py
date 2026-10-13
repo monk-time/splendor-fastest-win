@@ -45,5 +45,4 @@ def export_buys_to_txt():
     buys = get_buys()
     with Path('buys.txt').open(mode='w', encoding='utf-8') as f:
         print('Writing buys to a text file...')
-        for g in buys:
-            f.write(f'{g}: {buys[g]}\n')
+        f.writelines(f'{g}: {buys[g]}\n' for g in buys)

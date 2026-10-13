@@ -1,10 +1,13 @@
-from collections.abc import Iterable
 from functools import cache, partial
 from itertools import chain, product
+from typing import TYPE_CHECKING
 
 from more_itertools import distinct_permutations
 
 from src.color import COLOR_NUM, Color
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 MAX_GEMS = 7
 

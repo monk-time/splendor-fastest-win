@@ -28,7 +28,7 @@ class State:
         self.hash: int = hash((self.cards, self.gems))
 
     @classmethod
-    def newgame(cls) -> 'State':
+    def newgame(cls) -> State:
         no_gems = (0,) * COLOR_NUM
         return State(cards=(), bonus=no_gems, gems=no_gems, pts=0, saved=0)
 
@@ -45,7 +45,7 @@ class State:
     def __eq__(self, other) -> bool:
         return self.hash == other.hash
 
-    def buy_card(self, card_num: int) -> 'State':
+    def buy_card(self, card_num: int) -> State:
         # Because the simulation uses pre-generated table of possible buys,
         # this method doesn't check if player has enough gems to buy a card.
         cards_mut = list(self.cards)
@@ -99,18 +99,18 @@ class State:
 
     def solve(
         self, goal_pts: int = 15, *, use_heuristic: bool = False
-    ) -> list['State']:
+    ) -> list[State]:
         queue: list[State] = [self]
         trail: dict[State, State | None] = {self: None}
-        heuristic = (
-            lambda st: (st.saved**0.4) * (st.pts**2.5) + randint(1, 100) * 0.01
+        heuristic = lambda st: (
+            (st.saved**0.4) * (st.pts**2.5) + randint(1, 100) * 0.01
         )
 
         puzzle = self
         turn = 0
         max_pts = 0
         while queue:
-            print(f'{turn=:<10} {queue[0]}')
+            print(f'{turn=:<10} {len(queue)=}')
             next_queue = []
             for puzzle in queue:
                 if puzzle.pts > max_pts:
@@ -126,7 +126,7 @@ class State:
                     next_queue.append(next_step)
 
             queue = (
-                sorted(next_queue, key=heuristic, reverse=True)[:300_000]
+                sorted(next_queue, key=heuristic, reverse=True)[:1_000_000]
                 if use_heuristic
                 else next_queue
             )
